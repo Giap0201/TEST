@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Sân bóng Thịnh Vượng</title>
+    <!-- Import Google Font 'Inter' --><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icon Font (Font Awesome) --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* === KIỂU DÁNG CHUNG & BIẾN CSS === */
+        :root {
+            --primary-color: #007BFF;
+            --primary-dark: #0056b3;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            
+            --bg-body: #F4F7FC;
+            --bg-sidebar: #2C3E50;
+            --bg-card: #FFFFFF;
+            --text-dark: #343a40;
+            --text-light: #f8f9fa;
+            --text-muted: #6c757d;
+            --border-light: #eef0f2;
+            --box-shadow-light: 0 6px 18px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* === BỐ CỤC CHÍNH === */
+        .dashboard-container {
+            min-height: 100vh;
+        }
+
+        /* === SIDEBAR (Mở rộng) === */
+        .sidebar {
+            background-color: var(--bg-sidebar);
+            color: var(--text-light);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: fixed;
+            width: 240px; 
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 200;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: width 0.3s ease;
+        }
+
+        .sidebar .logo {
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            text-align: left;
+            width: 100%;
+            padding: 0 20px 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar .logo i {
+            font-size: 28px;
+        }
+
+        .sidebar-nav {
+            width: 100%;
+            flex-grow: 1;
+            padding: 0 15px;
+        }
+
+        .sidebar-nav li {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-nav li a {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 12px 15px;
+            color: var(--text-light);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            text-align: left;
+            border-radius: 8px;
+        }
+
+        .sidebar-nav li a i {
+            font-size: 1.1em;
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-nav li a:hover,
+        .sidebar-nav li a.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            opacity: 1;
+            color: #fff;
+            font-weight: 500;
+        }
+        .sidebar-nav li a.active {
+            background-color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+        
+        /* === MAIN CONTENT === */
+        .main-content {
+            padding: 25px;
+            background-color: var(--bg-body);
+            margin-left: 240px; 
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .top-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* === NÚT CHUNG === */
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.02);
+        }
+        .btn-secondary {
+            background-color: var(--bg-card);
+            color: var(--text-dark);
+            border: 1px solid var(--border-light);
+        }
+        .btn-secondary:hover {
+            background-color: #f8f9fa;
+            transform: scale(1.02);
+        }
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        .btn-danger:hover {
+            opacity: 0.85;
+            transform: scale(1.02);
+        }
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: #212529; 
+        }
+        .btn-warning:hover {
+            opacity: 0.85;
+            transform: scale(1.02);
+        }
+        .btn-info {
+            background-color: var(--info-color);
+            color: white;
+        }
+        .btn-info:hover {
+            opacity: 0.85;
+            transform: scale(1.02);
+        }
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.85em;
+        }
+        .btn i {
+            margin-right: 5px;
+        }
+
+        /* Nút viền đỏ */
+        .btn-danger-outline {
+            background-color: transparent;
+            border: 1px solid var(--danger-color);
+            color: var(--danger-color);
+            font-weight: 500;
+        }
+        .btn-danger-outline:hover {
+            background-color: var(--danger-color);
+            color: white;
+            opacity: 1;
+            transform: scale(1.02);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-profile .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.1em;
+            background-color: var(--primary-color);
+        }
+        .user-profile .name {
+            font-weight: 600;
+        }
+        .user-profile .role {
+            font-size: 0.85em;
+            color: var(--text-muted);
+        }
+
+        /* === GENERAL CARD STYLING === */
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--box-shadow-light);
+            margin-bottom: 25px;
+            border: none;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .card-header h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .card-header .action-link {
+            font-size: 0.9em;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        .card-header .action-link:hover {
+            text-decoration: underline;
+        }
+
+        /* === BẢNG (TABLE) === */
+        .table-container {
+            overflow-x: auto;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        .table thead tr {
+            border-bottom: 2px solid var(--border-light);
+        }
+        .table th {
+            padding: 15px 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        .table tbody tr {
+            border-bottom: 1px solid var(--border-light);
+            transition: background-color 0.2s ease;
+        }
+        .table tbody tr:hover {
+            background-color: #fcfcfc;
+        }
+        .table tbody tr:last-child {
+            border-bottom: none;
+        }
+        .table td {
+            padding: 16px 12px;
+            vertical-align: middle;
+            color: var(--text-dark);
+        }
+        .table td strong {
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+        .table td .text-muted-inline {
+             color: var(--text-muted);
+             font-size: 0.9em;
+        }
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* === BADGES (THẺ TAG) === */
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #fff;
+            display: inline-block;
+            text-transform: capitalize;
+        }
+        .badge-success {
+            background-color: var(--success-color);
+        }
+        .badge-danger {
+            background-color: var(--danger-color);
+        }
+        .badge-warning {
+            background-color: var(--warning-color);
+            color: #212529;
+        }
+        .badge-gold {
+            background-color: #FFB822;
+            color: #212529; 
+            font-weight: 600;
+        }
+        .badge-vip {
+            background-color: var(--primary-dark);
+            color: white; 
+            font-weight: 600;
+        }
+        .badge-silver {
+            background-color: #a9b1b9;
+            color: white; 
+            font-weight: 600;
+        }
+         .badge-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        /* Mới: Badge màu xám (Secondary) */
+        .badge-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        /* Mới: Badge màu cam (Info/Active) */
+        .badge-info {
+            background-color: var(--info-color);
+            color: white;
+        }
+
+        /* === MODAL CHUNG === */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none; /* Mặc định ẩn */
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-overlay.active,
+        .modal-overlay:target { /* Cho phép hiển thị tĩnh (debug) */
+            display: flex;
+        }
+        .modal-content {
+            background-color: var(--bg-card);
+            width: 600px;
+            max-width: 90%;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden; 
+            animation: fadeInModal 0.3s ease-out;
+        }
+        @keyframes fadeInModal {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .modal-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .modal-close {
+            font-size: 2rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s ease;
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: var(--danger-color);
+        }
+        .modal-body {
+            padding: 25px;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 15px 25px;
+            background-color: #f9f9f9;
+            border-top: 1px solid var(--border-light);
+        }
+
+        /* === FORM TRONG MODAL === */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+        .form-group input[type="tel"],
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group input[type="time"],
+        .form-group input[type="number"],
+        .form-group input[type="email"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: #fcfcfc;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+            background-color: #fff;
+        }
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        /* === THANH CÔNG CỤ (TRANG KHÁCH HÀNG) === */
+        .page-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 20px;
+        }
+        .search-bar {
+            position: relative;
+            flex-grow: 1;
+        }
+        .search-bar input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-card);
+        }
+        .search-bar input:focus {
+             outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+        }
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .toolbar-actions {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        /* === PROMPT 11: GIAO DIỆN LỊCH ĐẶT SÂN === */
+        .page-toolbar .date-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .page-toolbar input[type="date"] {
+            padding: 8px 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-card);
+        }
+        .page-toolbar input[type="date"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        /* Nút điều hướng ngày nhỏ */
+        .page-toolbar .btn-nav {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            line-height: 1;
+        }
+
+        .schedule-container {
+            /* Dùng lại .card-styling, nhưng thêm overflow */
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: var(--box-shadow-light);
+            overflow: hidden;
+        }
+        
+        /* Grid chính cho Lịch */
+        .schedule-grid {
+            display: grid;
+            /* Cột 1: Khung giờ, Cột 2: Nội dung chính (cuộn ngang) */
+            grid-template-columns: 80px 1fr;
+            grid-template-rows: auto 1fr; /* Hàng 1: Tiêu đề sân, Hàng 2: Lưới nội dung */
+        }
+        
+        /* Tiêu đề (Sân 1, Sân 2...) */
+        .schedule-header {
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            display: grid;
+            /* Chia 5 cột sân, mỗi cột tối thiểu 150px */
+            grid-template-columns: repeat(5, minmax(150px, 1fr));
+            border-bottom: 1px solid var(--border-light);
+        }
+        .schedule-header .pitch-name {
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: 600;
+            border-right: 1px solid var(--border-light);
+            background-color: #fcfcfc;
+        }
+        .schedule-header .pitch-name:last-child {
+            border-right: none;
+        }
+
+        /* Cột nhãn thời gian (07:00...) */
+        .schedule-time-labels {
+            grid-column: 1 / 2;
+            grid-row: 2 / 3;
+            /* 16 giờ, mỗi giờ 60px */
+            display: grid;
+            grid-template-rows: repeat(16, 60px);
+            border-right: 1px solid var(--border-light);
+            background-color: #fcfcfc;
+        }
+        .schedule-time-labels .time-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            border-bottom: 1px dashed var(--border-light);
+        }
+        
+        /* Khung lưới chính (chứa các khối đặt) */
+        .schedule-main-wrapper {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+            overflow-x: auto; /* Cho phép cuộn ngang nếu nhiều sân */
+            position: relative;
+        }
+        .schedule-main {
+            display: grid;
+            /* 5 cột sân (bằng header) */
+            grid-template-columns: repeat(5, minmax(150px, 1fr));
+            /* 16 hàng giờ (bằng time-labels) */
+            grid-template-rows: repeat(16, 60px);
+            position: relative; /* Quan trọng để định vị .booking-block */
+        }
+
+        /* Lưới nền (các ô mờ) */
+        .schedule-main .grid-cell {
+            border-bottom: 1px dashed var(--border-light);
+            border-right: 1px solid var(--border-light);
+        }
+        .schedule-main .grid-cell:last-child {
+             border-right: none;
+        }
+        
+        /* Khối Đặt Sân (Hiển thị đè) */
+        .booking-block {
+            position: absolute;
+            z-index: 10;
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin: 1px 2px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            
+            /* CSS cho nội dung */
+            font-size: 0.8rem;
+            color: #fff;
+            font-weight: 500;
+        }
+        .booking-block strong {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        /* Màu sắc trạng thái */
+        .booking-block.status-success {
+            background-color: var(--success-color);
+        }
+        .booking-block.status-warning {
+            background-color: var(--warning-color);
+            color: #212529; /* Chữ tối */
+        }
+        .booking-block.status-secondary {
+            background-color: var(--secondary-color);
+        }
+        .booking-block.status-danger {
+            background-color: var(--danger-color);
+        }
+        .booking-block.status-info {
+            background-color: var(--info-color);
+        }
+
+
+        /* === KIỂU DÁNG CỤ THỂ CHO CÁC MODAL === */
+
+        /* Modal 700px (Bảo trì, Hạng) */
+        #maintenance-modal .modal-content,
+        #loyalty-modal .modal-content,
+        #tier-config-modal .modal-content {
+            width: 700px;
+        }
+
+        /* Modal 800px (Lịch sử KH) */
+        #customer-history-modal .modal-content {
+            width: 800px;
+        }
+        
+        /* Lớp chung cho các phần trong modal */
+        .modal-body .modal-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .modal-body .modal-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .modal-body h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+
+        /* Modal Bảo trì (Prompt 6) */
+        #maintenance-form {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 15px;
+            align-items: flex-end;
+        }
+        #maintenance-form .form-group {
+             margin-bottom: 0;
+        }
+
+        /* Modal Hạng (Prompt 9 mới) */
+        .tier-config-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Modal Lịch sử KH (Prompt 10) */
+        .modal-header .header-content {
+            flex-grow: 1;
+        }
+        .modal-header .header-summary {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .modal-filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .modal-filter-bar .filter-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--border-light);
+            background-color: var(--bg-card);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .modal-filter-bar .filter-btn:hover {
+            background-color: var(--bg-body);
+        }
+        .modal-filter-bar .filter-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* === HIỂN THỊ MODAL (CHỈ ĐỊNH) === */
+        
+        /* Ẩn tất cả modal theo mặc định (lớp 'active' sẽ bật chúng) */
+        #booking-modal,
+        #pitch-info-modal,
+        #maintenance-modal,
+        #customer-info-modal,
+        #loyalty-modal,
+        #tier-config-modal,
+        #customer-history-modal {
+            /* Mặc định là 'none' */
+        }
+        
+        /* PROMPT 10: (ĐÃ ẨN) */
+        #customer-history-modal {
+            /* display: flex !important; */
+        }
+
+        /* === PROMPT 8 (MỚI): (ĐÃ ẨN) === */
+        #customer-info-modal {
+            /* display: flex !important; */ /* ẨN MODAL NÀY */
+        }
+
+        /* === PROMPT 9 (MỚI): (ĐÃ ẨN) === */
+        #tier-config-modal {
+            /* display: flex !important; */ /* ẨN MODAL NÀY */
+        }
+
+
+        /* === RESPONSIVE === */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+            }
+             .sidebar .logo span { display: none; }
+             .sidebar .sidebar-nav span { display: none; }
+             .sidebar-nav li a { justify-content: center; }
+             .sidebar-nav li a i { margin-right: 0; }
+            
+            .main-content {
+                margin-left: 80px;
+                padding: 15px;
+            }
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .page-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-bar input {
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            /* Bố cục 1 cột cho form */
+            .form-row, 
+            #maintenance-form,
+            .tier-config-row {
+                grid-template-columns: 1fr;
+            }
+            /* Đặt lại nút Gửi Yêu cầu (bảo trì) */
+            #maintenance-form button {
+                margin-top: 10px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <!-- Sidebar --><aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-futbol"></i> <span>Thịnh Vượng</span>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="#"><i class="fas fa-tachometer-alt"></i> <span>Tổng quan</span></a></li>
+                <li><a href="#"><i class="fas fa-futbol"></i> <span>Sân bóng</span></a></li>
+                <li><a href="#" class="active"><i class="fas fa-calendar-alt"></i> <span>Đặt sân</span></a></li>
+                <li><a href="#"><i class="fas fa-users"></i> <span>Khách hàng</span></a></li>
+                <li><a href="#"><i class="fas fa-credit-card"></i> <span>Thanh toán</span></a></li>
+                <li><a href="#"><i class="fas fa-user-tie"></i> <span>Nhân viên</span></a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> <span>Báo cáo</span></a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content --><main class="main-content">
+            <header class="top-header">
+                <h1>Lịch đặt sân (Timeline)</h1>
+                <div class="user-info">
+                    <div class="user-profile">
+                        <div class="avatar">CS</div>
+                        <div>
+                            <div class="name">Chủ Sân</div>
+                            <div class="role">Thịnh Vượng FC</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- === PROMPT 11: NỘI DUNG TRANG LỊCH ĐẶT SÂN === -->
+            
+            <!-- Thanh công cụ (Toolbar) -->
+            <div class="page-toolbar">
+                <div class="date-nav">
+                    <input type="date" id="view-date" name="view-date" value="2025-11-16">
+                    <button class="btn btn-secondary btn-nav">&lt;</button>
+                    <button class="btn btn-secondary btn-nav">Hôm nay</button>
+                    <button class="btn btn-secondary btn-nav">&gt;</button>
+                </div>
+                <div class="toolbar-actions">
+                    <!-- Nút này sẽ kích hoạt modal#booking-modal -->
+                    <button class="btn btn-primary"><i class="fas fa-plus"></i> Thêm Lịch đặt</button>
+                </div>
+            </div>
+
+            <!-- Giao diện Lịch (Schedule View) -->
+            <div class="schedule-container">
+                <div class="schedule-grid">
+                    
+                    <!-- Góc trên bên trái (trống) -->
+                    <div style="grid-column: 1 / 2; grid-row: 1 / 2; border-bottom: 1px solid var(--border-light);"></div>
+
+                    <!-- Hàng Tiêu đề (Tên Sân) -->
+                    <div class="schedule-header">
+                        <div class="pitch-name">Sân 1 (7v7)</div>
+                        <div class="pitch-name">Sân 2 (7v7)</div>
+                        <div class="pitch-name">Sân 3 (5v5)</div>
+                        <div class="pitch-name">Sân 4 (5v5)</div>
+                        <div class="pitch-name">Sân 5 (5v5)</div>
+                    </div>
+
+                    <!-- Cột Thời gian -->
+                    <div class="schedule-time-labels">
+                        <div class="time-label">07:00</div>
+                        <div class="time-label">08:00</div>
+                        <div class="time-label">09:00</div>
+                        <div class="time-label">10:00</div>
+                        <div class="time-label">11:00</div>
+                        <div class="time-label">12:00</div>
+                        <div class="time-label">13:00</div>
+                        <div class="time-label">14:00</div>
+                        <div class="time-label">15:00</div>
+                        <div class="time-label">16:00</div>
+                        <div class="time-label">17:00</div>
+                        <div class="time-label">18:00</div>
+                        <div class="time-label">19:00</div>
+                        <div class="time-label">20:00</div>
+                        <div class="time-label">21:00</div>
+                        <div class="time-label">22:00</div>
+                    </div>
+
+                    <!-- Lưới chính (cuộn ngang) -->
+                    <div class="schedule-main-wrapper">
+                        <!-- Lưới chính (nền và khối đặt) -->
+                        <div class="schedule-main">
+                            <!-- Lưới nền (Grid Cells) -->
+                            <!-- Tạo lưới 5x16 (5 sân x 16 giờ) -->
+                            <!-- (Tạo bằng JS sẽ tốt hơn, ở đây ta làm CSS) -->
+                            <script>
+                                // JS tạm để tạo lưới nền (chỉ để demo)
+                                // Trong thực tế, các booking-block sẽ được đặt đè lên
+                                const mainGrid = document.querySelector('.schedule-main');
+                                if (mainGrid) {
+                                    for (let i = 0; i < (16 * 5); i++) {
+                                        const cell = document.createElement('div');
+                                        cell.className = 'grid-cell';
+                                        mainGrid.appendChild(cell);
+                                    }
+                                }
+                            </script>
+
+                            <!-- CÁC KHỐI ĐẶT SÂN (VÍ DỤ MẪU) -->
+                            <!-- Ghi chú: 
+                                 - 1 giờ = 60px
+                                 - 90 phút = 90px
+                                 - 1 cột sân = 20%
+                                 - (0,0) là 07:00
+                            -->
+                            
+                            <!-- 1. Đã thanh toán (Xanh) - Sân 1 (cột 1) - 09:00 (120px) - 90 phút (90px) -->
+                            <div class="booking-block status-success" style="
+                                left: 0%; 
+                                width: calc(20% - 4px); 
+                                top: 120px; /* (9-7)*60 */
+                                height: 90px; /* 90 phút */
+                            ">
+                                <strong>Anh Giáp</strong>
+                                <span>Đã thanh toán</span>
+                            </div>
+
+                            <!-- 2. Đã đặt cọc (Vàng) - Sân 2 (cột 2) - 08:00 (60px) - 120 phút (120px) -->
+                            <div class="booking-block status-warning" style="
+                                left: 20%; 
+                                width: calc(20% - 4px); 
+                                top: 60px; /* (8-7)*60 */
+                                height: 120px; /* 120 phút */
+                            ">
+                                <strong>Chị Thủy</strong>
+                                <span>Đã cọc</span>
+                            </div>
+
+                            <!-- 3. Đang đá (Cam) - Sân 3 (cột 3) - 16:00 (540px) - 90 phút (90px) -->
+                            <div class="booking-block status-info" style="
+                                left: 40%; 
+                                width: calc(20% - 4px); 
+                                top: 540px; /* (16-7)*60 */
+                                height: 90px;
+                            ">
+                                <strong>Anh Thái - 09xx</strong>
+                                <span>Đang đá</span>
+                            </div>
+
+                            <!-- 4. Chờ thanh toán (Xám) - Sân 3 (cột 3) - 18:00 (660px) - 90 phút (90px) -->
+                            <div class="booking-block status-secondary" style="
+                                left: 40%; 
+                                width: calc(20% - 4px); 
+                                top: 660px; /* (18-7)*60 */
+                                height: 90px;
+                            ">
+                                <strong>Đội CNTT K64</strong>
+                                <span>Chờ thanh toán</span>
+                            </div>
+
+                            <!-- 5. Bảo trì (Đỏ) - Sân 5 (cột 5) - Cả ngày (07:00 - 23:00) -->
+                            <div class="booking-block status-danger" style="
+                                left: 80%; 
+                                width: calc(20% - 4px); 
+                                top: 0;
+                                height: 960px; /* 16 giờ * 60px */
+                            ">
+                                <strong>Sân đang bảo trì</strong>
+                                <span>Rách lưới</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- === TẤT CẢ CÁC MODAL (POPUP) ĐỀU NẰM Ở ĐÂY === -->
+
+    <!-- MODAL 1: THÊM LỊCH ĐẶT NHANH (ẨN) -->
+    <div class="modal-overlay" id="booking-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tạo Lịch đặt sân</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="booking-form">
+                    <div class="form-group">
+                        <label for="customer-phone">SĐT Khách hàng</label>
+                        <input type="tel" id="customer-phone" name="customer-phone" placeholder="Nhập SĐT để tìm hoặc tạo mới...">
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-name">Tên Khách hàng</label>
+                        <input type="text" id="customer-name" name="customer-name" placeholder="Trần Văn A">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="pitch-select">Chọn Sân</label>
+                            <select id="pitch-select" name="pitch-select">
+                                <option value="san1">Sân 1</option>
+                                <option value="san2">Sân 2</option>
+                                <option value="san3">Sân 3</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                             <label for="booking-date">Ngày đặt</label>
+                             <input type="date" id="booking-date" name="booking-date" value="2025-11-16">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="start-time">Giờ bắt đầu</label>
+                            <input type="time" id="start-time" name="start-time" value="16:00">
+                        </div>
+                        <div class="form-group">
+                            <label for="duration">Thời lượng (phút)</label>
+                            <input type="number" id="duration" name="duration" value="90" step="30">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment-status">Trạng thái thanh toán</label>
+                        <select id="payment-status" name="payment-status">
+                            <option value="unpaid">Chưa thanh toán</option>
+                            <option value="deposit">Đã đặt cọc</option>
+                            <option value="paid">Đã thanh toán</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Hủy</button>
+                <button type="button" class="btn btn-primary">Lưu Lịch đặt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: THÊM/SỬA SÂN (ẨN) -->
+    <div class="modal-overlay" id="pitch-info-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Thêm Sân mới</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="pitch-info-form">
+                    <div class="form-group">
+                        <label for="pitch-name">Tên sân</label>
+                        <input type="text" id="pitch-name" name="pitch-name" placeholder="Ví dụ: Sân 6 (5v5)">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="pitch-type">Loại sân</label>
+                            <select id="pitch-type" name="pitch-type">
+                                <option value="5v5">Sân 5 người</option>
+                                <option value="7v7">Sân 7 người</option>
+                                <option value="11v11">Sân 11 người</option>
+                            </select>
+                        </div>
+                         <div class="form-group">
+                            <label for="pitch-price-normal">Giá giờ thường (VNĐ)</label>
+                            <input type="number" id="pitch-price-normal" name="pitch-price-normal" placeholder="250000" step="10000">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pitch-price-peak">Giá giờ vàng/cuối tuần (VNĐ)</label>
+                        <input type="number" id="pitch-price-peak" name="pitch-price-peak" placeholder="350000" step="10000">
+                    </div>
+                    <div class="form-group">
+                        <label for="pitch-status">Trạng thái vận hành</label>
+                        <select id="pitch-status" name="pitch-status">
+                            <option value="active">Đang hoạt động</option>
+                            <option value="inactive">Ngưng hoạt động (Sửa chữa lớn)</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Hủy</button>
+                <button type="button" class="btn btn-primary">Lưu thông tin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: BẢO TRÌ SÂN (ẨN) -->
+    <div class="modal-overlay" id="maintenance-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Quản lý Bảo trì - Sân 2 (5v5)</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h4>Tạo phiếu yêu cầu bảo trì mới</h4>
+                    <form id="maintenance-form">
+                        <div class="form-group">
+                            <label for="maintenance-desc">Mô tả sự cố</label>
+                            <input type="text" id="maintenance-desc" name="maintenance-desc" placeholder="Ví dụ: Rách lưới, Hỏng đèn...">
+                        </div>
+                        <div class="form-group">
+                            <label for="maintenance-priority">Mức độ ưu tiên</label>
+                            <select id="maintenance-priority" name="maintenance-priority">
+                                <option value="low">Thấp</option>
+                                <option value="medium" selected>Trung bình</option>
+                                <option value="high">Cao</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-primary">Gửi yêu cầu</button>
+                    </form>
+                </div>
+                <div class="modal-section">
+                    <h4>Lịch sử bảo trì sân</h4>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Ngày tạo</th>
+                                    <th>Mô tả</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>10/11/2025</td>
+                                    <td>Rách lưới góc B</td>
+                                    <td><span class="badge badge-warning">Đang chờ xử lý</span></td>
+                                </tr>
+                                 <tr>
+                                    <td>01/10/2025</td>
+                                    <td>Thay bóng đèn trụ 3</td>
+                                    <td><span class="badge badge-success">Đã sửa xong</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: THÊM/SỬA KHÁCH HÀNG (ẨN) -->
+    <div class="modal-overlay" id="customer-info-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Thông tin khách hàng</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="customer-info-form">
+                    <div class="form-group">
+                        <label for="cust-name">Họ và Tên</label>
+                        <input type="text" id="cust-name" name="cust-name" placeholder="Nguyễn Văn A">
+                    </div>
+                    <div class="form-group">
+                        <label for="cust-phone">Số điện thoại</label>
+                        <input type="tel" id="cust-phone" name="cust-phone" placeholder="0912345678">
+                    </div>
+                    <div class="form-group">
+                        <label for="cust-email">Email (nếu có)</label>
+                        <input type="email" id="cust-email" name="cust-email" placeholder="example@gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="cust-notes">Ghi chú</label>
+                        <textarea id="cust-notes" name="cust-notes" placeholder="Khách quen, thường đá sân 2..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Hủy</button>
+                <button type="button" class="btn btn-primary">Lưu thông tin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: CẤU HÌNH HẠNG (ẨN) -->
+    <div class="modal-overlay" id="tier-config-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cấu hình Hạng thành viên & Ưu đãi</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="tier-config-form">
+                    <div class="modal-section">
+                        <h4>Hạng Bạc</h4>
+                        <div class="tier-config-row">
+                            <div class="form-group">
+                                <label for="silver-condition">Điều kiện thăng hạng (Số lượt đặt tối thiểu):</label>
+                                <input type="number" id="silver-condition" name="silver-condition" value="10">
+                            </div>
+                            <div class="form-group">
+                                <label for="silver-discount">Ưu đãi áp dụng (Giảm giá %):</label>
+                                <input type="number" id="silver-discount" name="silver-discount" value="5">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h4>Hạng Vàng</h4>
+                        <div class="tier-config-row">
+                            <div class="form-group">
+                                <label for="gold-condition">Điều kiện thăng hạng (Số lượt đặt tối thiểu):</label>
+                                <input type="number" id="gold-condition" name="gold-condition" value="30">
+                            </div>
+                            <div class="form-group">
+                                <label for="gold-discount">Ưu đãi áp dụng (Giảm giá %):</label>
+                                <input type="number" id="gold-discount" name="gold-discount" value="10">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h4>Hạng VIP</h4>
+                        <div class="tier-config-row">
+                            <div class="form-group">
+                                <label for="vip-condition">Điều kiện thăng hạng (Số lượt đặt tối thiểu):</label>
+                                <input type="number" id="vip-condition" name="vip-condition" value="50">
+                            </div>
+                            <div class="form-group">
+                                <label for="vip-discount">Ưu đãi áp dụng (Giảm giá %):</label>
+                                <input type="number" id="vip-discount" name="vip-discount" value="20">
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-muted" style="font-size: 0.9rem; margin-top: 10px; text-align: center;">
+                        Hệ thống sẽ tự động cập nhật hạng của khách hàng dựa trên các quy tắc này.
+                    </p>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Hủy</button>
+                <button type="button" class="btn btn-primary">Lưu Cấu hình</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 6: LỊCH SỬ ĐẶT SÂN KHÁCH HÀNG (HIỂN THỊ TĨNH) -->
+    <div class="modal-overlay" id="customer-history-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="header-content">
+                    <h3>Lịch sử Đặt sân: Nguyễn Văn A</h3>
+                    <div class="header-summary">Tổng cộng: 12 lần đặt - Hạng: Vàng</div>
+                </div>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-filter-bar">
+                    <button class="filter-btn active">Tất cả</button>
+                    <button class="filter-btn">Đã hoàn thành</button>
+                    <button class="filter-btn">Đã hủy</button>
+                </div>
+                <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Ngày đặt</th>
+                                <th>Khung giờ</th>
+                                <th>Sân bóng</th>
+                                <th>Tổng tiền</th>
+                                <th>Trạng thái đặt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>15/11/2025</td>
+                                <td>18:00 - 19:30</td>
+                                <td>Sân 2 (5v5)</td>
+                                <td>350.000 VNĐ</td>
+                                <td><span class="badge badge-primary">Đang chờ đá</span></td>
+                            </tr>
+                            <tr>
+                                <td>08/11/2025</td>
+                                <td>19:00 - 20:30</td>
+                                <td>Sân 1 (5v5)</td>
+                                <td>350.000 VNĐ</td>
+                                <td><span class="badge badge-success">Đã hoàn thành</span></td>
+                            </tr>
+                            <tr>
+                                <td>01/11/2025</td>
+                                <td>17:30 - 19:00</td>
+                                <td>Sân 3 (7v7)</td>
+                                <td>550.000 VNĐ</td>
+                                <td><span class="badge badge-success">Đã hoàn thành</span></td>
+                            </tr>
+                            <tr>
+                                <td>25/10/2025</td>
+                                <td>18:00 - 19:30</td>
+                                <td>Sân 1 (5v5)</td>
+                                <td>350.000 VNĐ</td>
+                                <td><span class="badge badge-danger">Đã hủy</span></td>
+                            </tr>
+                             <tr>
+                                <td>18/10/2025</td>
+                                <td>18:00 - 19:30</td>
+                                <td>Sân 2 (5v5)</td>
+                                <td>350.000 VNĐ</td>
+                                <td><span class="badge badge-success">Đã hoàn thành</span></td>
+                            </tr>
+                             <tr>
+                                <td>11/10/2025</td>
+                                <td>18:00 - 19:30</td>
+                                <td>Sân 2 (5v5)</td>
+                                <td>350.000 VNĐ</td>
+                                <td><span class="badge badge-success">Đã hoàn thành</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Sân bóng Thịnh Vượng</title>
+    <!-- Import Google Font 'Inter' (hiện đại hơn 'Roboto') -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icon Font (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* === KIỂU DÁNG CHUNG & BIẾN CSS === */
+        :root {
+            --primary-color: #007BFF;
+            --primary-dark: #0056b3;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --vip-color: #b71c1c; /* Màu VIP (Đỏ sậm) */
+            --gold-color: #ffab00; /* Màu Vàng */
+            --silver-color: #B0BEC5; /* Màu Bạc */
+            
+            --bg-body: #F4F7FC;
+            --bg-sidebar: #2C3E50;
+            --bg-card: #FFFFFF;
+            --text-dark: #343a40;
+            --text-light: #f8f9fa;
+            --text-muted: #6c757d;
+            --border-light: #e9ecef; /* Viền sáng hơn */
+            --box-shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05); /* Bóng mờ */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* === BỐ CỤC CHÍNH === */
+        .sidebar {
+            background-color: var(--bg-sidebar);
+            color: var(--text-light);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 240px; /* Nới rộng sidebar */
+            height: 100%;
+            z-index: 200;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: width 0.3s ease;
+        }
+
+        .sidebar .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            font-size: 1.5rem; /* Điều chỉnh kích thước logo */
+            font-weight: 700;
+            color: #fff;
+            width: 100%;
+            padding: 10px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .logo i {
+            font-size: 1.8rem;
+        }
+        .sidebar .logo span {
+            display: block; /* Hiển thị chữ */
+        }
+
+        .sidebar-nav {
+            width: 100%;
+            flex-grow: 1;
+            padding: 0 20px; /* Thêm padding cho các mục nav */
+        }
+
+        .sidebar-nav li {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Tăng khoảng cách */
+            padding: 14px 20px; /* Điều chỉnh padding */
+            color: var(--text-light);
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            font-size: 1rem; /* Kích thước chữ to hơn */
+            font-weight: 500;
+            border-radius: 8px;
+        }
+
+        .sidebar-nav li a i {
+            font-size: 1.2rem; /* Đồng bộ kích thước icon */
+            width: 20px; /* Căn chỉnh icon */
+            text-align: center;
+        }
+
+        .sidebar-nav li a:hover,
+        .sidebar-nav li a.active {
+            background-color: var(--primary-color);
+            opacity: 1;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+        
+        /* MAIN CONTENT */
+        .main-content {
+            padding: 30px;
+            background-color: var(--bg-body);
+            margin-left: 240px; /* Offset cho sidebar đã nới rộng */
+            transition: margin-left 0.3s ease;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .top-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* === NÚT CHUNG (Đã tái cấu trúc) === */
+        .btn {
+            padding: 12px 20px; /* Tăng padding */
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem; /* Kích thước chữ */
+            font-weight: 600; /* Đậm hơn */
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex; /* Dùng flex để căn icon */
+            align-items: center;
+            justify-content: center;
+            gap: 8px; /* Khoảng cách icon và chữ */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .btn:hover {
+            transform: translateY(-2px); /* Hiệu ứng nhấc lên */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        .btn-secondary {
+            background-color: var(--bg-card);
+            color: var(--text-dark);
+            border: 1px solid var(--border-light);
+        }
+        .btn-secondary:hover {
+            background-color: #f8f9fa;
+        }
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        .btn-danger-outline {
+            background-color: transparent;
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+        }
+        .btn-danger-outline:hover {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: #212529;
+        }
+        .btn-info {
+            background-color: var(--info-color);
+            color: white;
+        }
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        .btn-success:hover {
+            opacity: 0.85;
+        }
+        
+        /* Nút nhỏ cho bảng */
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-card);
+            padding: 8px 12px;
+            border-radius: 25px;
+            box-shadow: var(--box-shadow-light);
+        }
+        .user-profile .avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .user-profile .name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .user-profile .role {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* === GENERAL CARD STYLING === */
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 16px; /* Bo tròn nhiều hơn */
+            padding: 25px 30px; /* Tăng padding */
+            box-shadow: var(--box-shadow-light);
+            margin-bottom: 25px;
+            border: 1px solid var(--border-light);
+        }
+        
+        /* === PROMPT 14: TRANG QUẢN LÝ HÓA ĐƠN === */
+
+        .page-toolbar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            align-items: center;
+        }
+
+        .search-bar {
+            flex-grow: 1; /* Cho thanh tìm kiếm chiếm nhiều không gian */
+            position: relative;
+        }
+
+        .search-bar input,
+        .page-toolbar input[type="date"] {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .search-bar input {
+            padding-left: 45px; /* Padding cho icon */
+        }
+        
+        .page-toolbar label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            white-space: nowrap; /* Không xuống dòng */
+        }
+
+        .search-bar input:focus,
+        .page-toolbar input[type="date"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+        }
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        
+        .page-toolbar .btn-warning {
+            margin-left: auto; /* Đẩy nút sang phải */
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .table thead tr {
+            background-color: #f8f9fa;
+        }
+
+        .table th {
+            padding: 16px 15px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody tr {
+            border-bottom: 1px solid var(--border-light);
+            transition: background-color 0.2s ease;
+        }
+        .table tbody tr:last-child {
+            border-bottom: none;
+        }
+        .table tbody tr:hover {
+            background-color: #fcfdff;
+        }
+
+        .table td {
+            padding: 16px 15px;
+            vertical-align: middle;
+            color: var(--text-dark);
+        }
+        
+        .table td .customer-name {
+            font-weight: 600;
+        }
+        .table td .customer-phone {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .table td .invoice-id {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-family: monospace;
+            font-size: 1.05rem;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Badges (Thẻ tag) */
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px; /* Hình con nhộng */
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            text-transform: capitalize;
+            border: 1px solid transparent;
+        }
+        .badge-success {
+            background-color: #e9f7ef;
+            color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        .badge-danger {
+            background-color: #fceeed;
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        .badge-warning {
+            background-color: #fff8e6;
+            color: #f59e0b; /* Màu vàng đậm hơn */
+            border-color: #f59e0b;
+        }
+        .badge-primary {
+             background-color: #e7f2ff;
+             color: var(--primary-color);
+             border-color: var(--primary-color);
+        }
+        /* Hạng thành viên */
+        .badge-vip {
+            background-color: #fde8e8;
+            color: var(--vip-color);
+            border-color: var(--vip-color);
+        }
+        .badge-gold {
+            background-color: #fff8e1;
+            color: var(--gold-color);
+            border-color: var(--gold-color);
+        }
+        .badge-silver {
+            background-color: #eceff1;
+            color: var(--silver-color);
+            border-color: var(--silver-color);
+        }
+        /* Badge cho PTTT */
+        .badge-method {
+            background-color: #f0f3f5;
+            color: var(--secondary-color);
+            border-color: #cfd8dc;
+        }
+
+        /* === MODAL STYLING (CHUNG) === */
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none; /* Mặc định ẩn */
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeInOverlay 0.3s ease;
+        }
+        
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            width: 550px;
+            max-width: 90%;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: fadeInModal 0.3s ease-out;
+            max-height: 90vh; /* Giới hạn chiều cao */
+            display: flex; /* Dùng flex column */
+            flex-direction: column;
+        }
+
+        @keyframes fadeInModal {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0; /* Không co lại */
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .modal-close {
+            font-size: 2.2rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s ease;
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: var(--danger-color);
+        }
+
+        .modal-body {
+            padding: 30px;
+            overflow-y: auto; /* Cho phép cuộn nội dung */
+            flex-grow: 1; /* Chiếm không gian */
+        }
+
+        /* Styling cho Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+
+        .form-group input[type="tel"],
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group input[type="time"],
+        .form-group input[type="number"],
+        .form-group input[type="email"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: #fcfcfc;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+            background-color: #fff;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 20px 30px;
+            background-color: #f9f9f9;
+            border-top: 1px solid var(--border-light);
+            flex-shrink: 0; /* Không co lại */
+        }
+        
+        /* === CÁC PHẦN ĐẶC BIỆT TRONG MODAL === */
+        .modal-section {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px dashed var(--border-light);
+        }
+        .modal-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .modal-section h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        .modal-note {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 20px;
+        }
+        .config-tier-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        /* === PROMPT 10: MODAL LỊCH SỬ KHÁCH HÀNG === */
+        .modal-header .header-summary {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+        .modal-filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .modal-filter-bar .btn {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+        
+        /* === PROMPT 12: MODAL CHI TIẾT ĐẶT SÂN === */
+        .booking-details-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px 25px;
+        }
+        .booking-details-body h4 {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+        .booking-details-body p {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .booking-details-actions {
+            grid-column: 1 / -1; /* Chiếm hết 2 cột */
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        /* === PROMPT 13 (MỚI): MODAL THANH TOÁN === */
+        /* Cải tiến giao diện (dùng grid) */
+        .payment-details-body.modern {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 12px 20px;
+            align-items: center;
+        }
+        .payment-details-body.modern h4 {
+            margin: 0;
+            text-align: right;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+        .payment-details-body.modern p {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .payment-summary.modern {
+            grid-column: 1 / -1; /* Chiếm toàn bộ cột */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+        }
+        .payment-summary.modern h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        .payment-summary.modern h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--danger-color);
+            margin: 0;
+        }
+        
+        .payment-form-section {
+             margin-top: 20px;
+             padding-top: 20px;
+             border-top: 1px solid var(--border-light);
+             grid-column: 1 / -1; /* Chiếm toàn bộ cột */
+        }
+        
+        /* === PROMPT 17 (MỚI): MODAL CHI TIẾT HÓA ĐƠN === */
+        #invoice-details-modal .modal-content {
+            width: 500px;
+        }
+        .invoice-body {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px 20px;
+            align-items: center;
+        }
+        .invoice-body h4 {
+            margin: 0;
+            text-align: right;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+        .invoice-body p {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .invoice-body hr {
+            grid-column: 1 / -1;
+            border: none;
+            border-top: 1px dashed var(--border-light);
+            margin: 10px 0;
+        }
+        .invoice-services {
+            grid-column: 1 / -1;
+            font-size: 0.95rem;
+        }
+        .invoice-services div {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            color: var(--text-dark);
+        }
+        .invoice-services div span:last-child {
+            font-weight: 600;
+        }
+        
+        .invoice-total {
+            grid-column: 1 / -1;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-light);
+        }
+        .invoice-total h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .invoice-body .logo-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+
+        /* === KIỂU DÁNG CỤ THỂ CHO CÁC MODAL === */
+
+        /* Kích thước */
+        #pitch-info-modal .modal-content,
+        #tier-config-modal .modal-content,
+        #maintenance-modal .modal-content {
+            width: 700px;
+        }
+        #customer-history-modal .modal-content {
+            width: 800px;
+        }
+
+        /* === HIỂN THỊ MODAL (CHỈ 1 MODAL ĐƯỢC BẬT) === */
+        
+        #booking-modal,
+        #pitch-info-modal,
+        #maintenance-modal,
+        #customer-info-modal,
+        #tier-config-modal,
+        #customer-history-modal,
+        #booking-details-modal,
+        #payment-modal,
+        #invoice-details-modal {
+            display: none; /* Mặc định ẩn tất cả */
+        }
+        
+        /* === PROMPT 17 (HIỆN TẠI): HIỂN THỊ TĨNH MODAL CHI TIẾT HÓA ĐƠN === */
+        #invoice-details-modal {
+            display: flex !important;
+        }
+
+
+        /* === RESPONSIVE (ĐƠN GIẢN) === */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px; /* Thu nhỏ sidebar */
+            }
+            .sidebar .logo span, .sidebar-nav li a span {
+                display: none; /* Ẩn chữ */
+            }
+            .sidebar .logo {
+                justify-content: center;
+            }
+            .sidebar-nav li a {
+                justify-content: center;
+                padding: 15px 0;
+            }
+            .main-content {
+                margin-left: 80px; /* Điều chỉnh margin */
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* Trên di động, ẩn sidebar hoàn toàn (cần JS để bật/tắt) */
+            .sidebar {
+                left: -100%;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .top-header h1 {
+                font-size: 1.5rem;
+            }
+            .user-info {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            .page-toolbar {
+                flex-direction: column;
+                align-items: stretch; /* Kéo dài các phần tử */
+            }
+            .page-toolbar .btn-warning {
+                margin-left: 0; /* Reset margin */
+            }
+            
+            .modal-content {
+                width: 95%;
+                max-width: 95%;
+            }
+            .modal-body {
+                padding: 20px;
+            }
+            .modal-header, .modal-footer {
+                padding: 15px 20px;
+            }
+            .modal-header h3 {
+                font-size: 1.2rem;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .booking-details-body, .booking-details-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- === SIDEBAR === -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fas fa-futbol"></i> <span>Thịnh Vượng</span>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="#"><i class="fas fa-tachometer-alt"></i> <span>Tổng quan</span></a></li>
+            <li><a href="#"><i class="fas fa-futbol"></i> <span>Sân bóng</span></a></li>
+            <li><a href="#"><i class="fas fa-calendar-alt"></i> <span>Đặt sân</span></a></li>
+            <li><a href="#"><i class="fas fa-users"></i> <span>Khách hàng</span></a></li>
+            <li><a href="#" class="active"><i class="fas fa-credit-card"></i> <span>Thanh toán</span></a></li>
+            <li><a href="#"><i class="fas fa-user-tie"></i> <span>Nhân viên</span></a></li>
+            <li><a href="#"><i class="fas fa-chart-line"></i> <span>Báo cáo</span></a></li>
+        </ul>
+    </aside>
+
+    <!-- === MAIN CONTENT === -->
+    <main class="main-content">
+        
+        <!-- === TOP HEADER === -->
+        <header class="top-header">
+            <h1>Quản lý Hóa đơn</h1>
+            <div class="user-info">
+                <div class="user-profile">
+                    <div class="avatar">CS</div>
+                    <div>
+                        <div class="name">Chủ Sân</div>
+                        <div class="role">Thịnh Vượng FC</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- === PROMPT 14: NỘI DUNG TRANG QUẢN LÝ HÓA ĐƠN === -->
+        
+        <!-- Thanh công cụ -->
+        <div class="page-toolbar">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Tìm hóa đơn (theo SĐT, Tên khách)...">
+            </div>
+            <label for="filter-date">Lọc theo ngày:</label>
+            <input type="date" id="filter-date">
+            <button class="btn btn-warning"><i class="fas fa-cogs"></i> Quản lý Phương thức TT</button>
+        </div>
+
+        <!-- Bảng Danh sách Hóa đơn -->
+        <div class="card">
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã Hóa đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Ngày thanh toán</th>
+                            <th>Tổng tiền</th>
+                            <th>Phương thức</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="invoice-id">#HD1256</span></td>
+                            <td>
+                                <div class="customer-name">Anh Võ Hữu Thái</div>
+                                <div class="customer-phone">09xxxx456</div>
+                            </td>
+                            <td>16/11/2025 19:30</td>
+                            <td><strong>550.000 VNĐ</strong></td>
+                            <td><span class="badge badge-method">Tiền mặt</span></td>
+                            <td><span class="badge badge-success">Đã thanh toán</span></td>
+                            <td class="table-actions">
+                                <button class="btn btn-sm btn-secondary"><i class="fas fa-eye"></i> Xem</button>
+                                <button class="btn btn-sm btn-primary"><i class="fas fa-print"></i> In</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="invoice-id">#HD1255</span></td>
+                            <td>
+                                <div class="customer-name">Anh Giáp</div>
+                                <div class="customer-phone">09xxxx123</div>
+                            </td>
+                            <td>16/11/2025 10:30</td>
+                            <td><strong>300.000 VNĐ</strong></td>
+                            <td><span class="badge badge-method">Chuyển khoản</span></td>
+                            <td><span class="badge badge-success">Đã thanh toán</span></td>
+                            <td class="table-actions">
+                                <button class="btn btn-sm btn-secondary"><i class="fas fa-eye"></i> Xem</button>
+                                <button class="btn btn-sm btn-primary"><i class="fas fa-print"></i> In</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="invoice-id">#HD1254</span></td>
+                            <td>
+                                <div class="customer-name">Chị Thủy</div>
+                                <div class="customer-phone">09xxxx789</div>
+                            </td>
+                            <td>15/11/2025 17:00</td>
+                            <td><strong>250.000 VNĐ</strong></td>
+                            <td><span class="badge badge-method">Tiền mặt</span></td>
+                            <td><span class="badge badge-success">Đã thanh toán</span></td>
+                            <td class="table-actions">
+                                <button class="btn btn-sm btn-secondary"><i class="fas fa-eye"></i> Xem</button>
+                                <button class="btn btn-sm btn-primary"><i class="fas fa-print"></i> In</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="invoice-id">#HD1250</span></td>
+                            <td>
+                                <div class="customer-name">Bạn Hùng</div>
+                                <div class="customer-phone">09xxxx333</div>
+                            </td>
+                            <td>14/11/2025 20:00</td>
+                            <td><strong>-100.000 VNĐ</strong></td>
+                            <td><span class="badge badge-method">Hoàn tiền</span></td>
+                            <td><span class="badge badge-danger">Đã hoàn tiền (Hủy)</span></td>
+                            <td class="table-actions">
+                                <button class="btn btn-sm btn-secondary"><i class="fas fa-eye"></i> Xem</button>
+                                <button class="btn btn-sm btn-primary"><i class="fas fa-print"></i> In</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </main>
+
+    <!-- === (CÁC MODAL ĐƯỢC ĐẶT Ở ĐÂY) === -->
+
+    <!-- === PROMPT 3: MODAL "TẠO LỊCH ĐẶT SÂN" (ĐANG ẨN) === -->
+    <div class="modal-overlay" id="booking-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tạo Lịch đặt sân</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="booking-form">
+                    <div class="form-group">
+                        <label for="customer-phone">SĐT Khách hàng</label>
+                        <input type="tel" id="customer-phone" name="customer-phone" placeholder="Nhập SĐT để tìm hoặc tạo mới...">
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-name">Tên Khách hàng</label>
+                        <input type="text" id="customer-name" name="customer-name" placeholder="Trần Văn A">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="pitch-select">Chọn Sân</label>
+                            <select id="pitch-select" name="pitch-select">
+                                <option value="san1">Sân 1</option>
+                                <option value="san2">Sân 2</option>
+                                <option value="san3">Sân 3</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                             <label for="booking-date">Ngày đặt</label>
+                             <input type="date" id="booking-date" name="booking-date" value="2025-11-16">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="start-time">Giờ bắt đầu</label>
+                            <input type="time" id="start-time" name="start-time" value="16:00">
+                        </div>
+                        <div class="form-group">
+                            <label for="duration">Thời lượng (phút)</label>
+                            <input type="number" id="duration" name="duration" value="60" step="30">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment-status">Trạng thái thanh toán</label>
+                        <select id="payment-status" name="payment-status">
+                            <option value="unpaid">Chưa thanh toán</option>
+                            <option value="deposit">Đã đặt cọc</option>
+                            <option value="paid">Đã thanh toán</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Hủy</button>
+                <button type="button" class="btn btn-primary">Lưu Lịch đặt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- === PROMPT 5: MODAL "THÊM/SỬA SÂN" (ĐANG ẨN) === -->
+    <div class="modal-overlay" id="pitch-info-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cập nhật thông tin sân</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="pitch-info-form">
+                    <div class="form-group">
+                        <label for="pitch-name">Tên sân</label>
+                        <input type="text" id="pitch-name" name="pitch-name" value="Sân 1 (5v5)">
+                    </div>
+                    <div class="form-group">
+                        <label for="pitch-type">Loại sân</label>
+                        <select id="pitch-type" name="pitch-type">
+                            <option value="5v5" selected>Sân 5 người</option>
+                            <option value="7v7">Sân 7 người</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="price-normal">Giá giờ thường (VNĐ)</label>
+                            <input type="number" id="price-normal" name="price-normal" value="250000">
+                        </div>
+                        <div class="form-group">
+                            <label for="price-peak">Giá giờ vàng (VNĐ)</label>
+                            <input type="number" id="price-peak" name="price-peak" value="350000">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="operating-status">Trạng thái vận hành</label>
+                        <select id="operating-status" name="operating-status">
+                            <option value="active" selected>Đang hoạt động</option>
+                            <option value="inactive">Ngưng hoạt động (Sửa chữa lớn)</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Hủy</button>
+                <button type="button" class="btn btn-primary">Lưu thông tin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- === PROMPT 6: MODAL "QUẢN LÝ BẢO TRÌ" (ĐANG ẨN) === -->
+    <div class="modal-overlay" id="maintenance-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Quản lý Bảo trì - Sân 1</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Phần 1: Tạo phiếu -->
+                <div class="modal-section">
+                    <h4>Tạo phiếu yêu cầu bảo trì mới</h4>
+                    <form id="maintenance-form">
+                        <div class="form-group">
+                            <label for="maintenance-desc">Mô tả sự cố</label>
+                            <input type="text" id="maintenance-desc" name="maintenance-desc" placeholder="Ví dụ: Rách lưới, Hỏng đèn...">
+                        </div>
+                        <div class="form-group">
+                            <label for="maintenance-priority">Mức độ ưu tiên</label>
+                            <select id="maintenance-priority" name="maintenance-priority">
+                                <option value="low">Thấp</option>
+                                <option value="medium">Trung bình</option>
+                                <option value="high">Cao</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-primary">Gửi yêu cầu</button>
+                    </form>
+                </div>
+                <!-- Phần 2: Lịch sử -->
+                <div class="modal-section">
+                    <h4>Lịch sử bảo trì sân</h4>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Ngày tạo</th>
+                                    <th>Mô tả</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>15/11/2025</td>
+                                    <td>Hỏng đèn chiếu sáng góc C</td>
+                                    <td><span class="badge badge-warning">Đang chờ xử lý</span></td>
+                                </tr>
+                                <tr>
+                                    <td>10/11/2025</td>
+                                    <td>Sửa mặt cỏ nhân tạo</td>
+                                    <td><span class="badge badge-success">Đã sửa xong</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Đóng</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- === PROMPT 8: MODAL "THÊM/SỬA KHÁCH HÀNG" (ĐANG ẨN) === -->
+    <div class="modal-overlay" id="customer-info-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Thông tin khách hàng</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="customer-form">
+                    <div class="form-group">
+                        <label for="cust-name">Họ và Tên</label>
+                        <input type="text" id="cust-name" name="cust-name" placeholder="Nguyễn Văn A">
+                    </div>
+                    <div class="form-group">
+                        <label for="cust-phone">Số điện thoại</label>
+                        <input type="tel" id="cust-phone" name="cust-phone" placeholder="09xxxxxxxx">
+                    </div>
+                    <div class="form-group">
+                        <label for="cust-email">Email (nếu có)</label>
+                        <input type="email" id="cust-email" name="cust-email" placeholder="example@gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="cust-notes">Ghi chú</label>
+                        <textarea id="cust-notes" name="cust-notes" placeholder="Khách quen, thường đá..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Hủy</button>
+                <button type="button" class="btn btn-primary">Lưu thông tin</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- === PROMPT 9: MODAL "CẤU HÌNH HẠNG" (ĐANG ẨN) === -->
+    <div class="modal-overlay" id="tier-config-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cấu hình Hạng thành viên & Ưu đãi</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="tier-config-form">
+                    <!-- Mục 1: Cấu hình Hạng Bạc -->
+                    <div class="modal-section">
+                        <h4>Hạng Bạc</h4>
+                        <div class="config-tier-row">
+                            <div class="form-group">
+                                <label for="silver-condition">Điều kiện thăng hạng (Số lượt đặt tối thiểu):</label>
+                                <input type="number" id="silver-condition" name="silver-condition" value="10">
+                            </div>
+                            <div class="form-group">
+                                <label for="silver-discount">Ưu đãi áp dụng (Giảm giá %):</label>
+                                <input type="number" id="silver-discount" name="silver-discount" value="5">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Mục 2: Cấu hình Hạng Vàng -->
+                    <div class="modal-section">
+                        <h4>Hạng Vàng</h4>
+                        <div class="config-tier-row">
+                            <div class="form-group">
+                                <label for="gold-condition">Điều kiện thăng hạng (Số lượt đặt tối thiểu):</label>
+                                <input type="number" id="gold-condition" name="gold-condition" value="30">
+                            </div>
+                            <div class="form-group">
+                                <label for="gold-discount">Ưu đãi áp dụng (Giảm giá %):</label>
+                                <input type="number" id="gold-discount" name="gold-discount" value="10">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Mục 3: Cấu hình Hạng VIP -->
+                    <div class="modal-section">
+                        <h4>Hạng VIP</h4>
+                        <div class="config-tier-row">
+                            <div class="form-group">
+                                <label for="vip-condition">Điều kiện thăng hạng (Số lượt đặt tối thiểu):</label>
+                                <input type="number" id="vip-condition" name="vip-condition" value="50">
+                            </div>
+                            <div class="form-group">
+                                <label for="vip-discount">Ưu đãi áp dụng (Giảm giá %):</label>
+                                <input type="number" id="vip-discount" name="vip-discount" value="20">
+                            </div>
+                        </div>
+                    </div>
+                    <p class="modal-note">Hệ thống sẽ tự động cập nhật hạng của khách hàng dựa trên các quy tắc này.</p>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Hủy</button>
+                <button type="button" class="btn btn-primary">Lưu Cấu hình</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- === PROMPT 10: MODAL "LỊCH SỬ KHÁCH HÀNG" (ĐANG ẨN) === -->
+    <div class="modal-overlay" id="customer-history-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h3>Lịch sử Đặt sân: Võ Hữu Thái</h3>
+                    <div class="header-summary">(Tổng cộng: 15 lần đặt - Hạng: Vàng)</div>
+                </div>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-filter-bar">
+                    <button class="btn btn-secondary active">Tất cả</button>
+                    <button class="btn btn-secondary">Đã hoàn thành</button>
+                    <button class="btn btn-secondary">Đã hủy</button>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Ngày đặt</th>
+                                <th>Khung giờ</th>
+                                <th>Sân bóng</th>
+                                <th>Tổng tiền</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>16/11/2025</td>
+                                <td>18:00 - 19:30</td>
+                                <td>Sân 2</td>
+                                <td>500.000 VNĐ</td>
+                                <td><span class="badge badge-primary">Đang chờ đá</span></td>
+                            </tr>
+                            <tr>
+                                <td>10/11/2025</td>
+                                <td>19:00 - 20:30</td>
+                                <td>Sân 1</td>
+                                <td>500.000 VNĐ</td>
+                                <td><span class="badge badge-success">Đã hoàn thành</span></td>
+                            </tr>
+                            <tr>
+                                <td>03/11/2025</td>
+                                <td>18:00 - 19:30</td>
+                                <td>Sân 2</td>
+                                <td>450.000 VNĐ</td>
+                                <td><span class="badge badge-danger">Đã hủy</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Đóng</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- === PROMPT 12: MODAL "CHI TIẾT ĐẶT SÂN" (ĐANG ẨN) === -->
+    <div class="modal-overlay" id="booking-details-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chi tiết Đặt sân</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="booking-details-body">
+                    <div>
+                        <h4>Khách hàng:</h4>
+                        <p>Anh Võ Hữu Thái - 09xxxxxxx</p>
+                    </div>
+                    <div>
+                        <h4>Trạng thái thanh toán:</h4>
+                        <p><span class="badge badge-warning">Đã đặt cọc</span></p>
+                    </div>
+                    <div>
+                        <h4>Thời gian:</h4>
+                        <p>18:00 - 19:30 (Thứ 2, 17/11/2025)</p>
+                    </div>
+                    <div>
+                        <h4>Sân:</h4>
+                        <p>Sân 2 (7 người)</p>
+                    </div>
+                </div>
+                <!-- Phần nút nghiệp vụ -->
+                <div class="booking-details-actions">
+                    <button class="btn btn-success"><i class="fas fa-check"></i> Check-in (Vào sân)</button>
+                    <button class="btn btn-primary"><i class="fas fa-credit-card"></i> Thanh toán</button>
+                    <button class="btn btn-secondary"><i class="fas fa-edit"></i> Sửa Lịch đặt</button>
+                    <button class="btn btn-danger-outline"><i class="fas fa-times"></i> Hủy sân</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Đóng</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- === PROMPT 13: MODAL "XỬ LÝ THANH TOÁN" (ĐANG ẨN) === -->
+    <div class="modal-overlay" id="payment-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Xác nhận Thanh toán</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <!-- Áp dụng cải tiến giao diện -->
+            <div class="modal-body payment-details-body modern">
+                
+                <h4>Đơn đặt sân:</h4>
+                <p>Sân 2 (18:00 - 19:30)</p>
+                
+                <h4>Tiền sân:</h4>
+                <p>500.000 VNĐ</p>
+
+                <h4>Dịch vụ (nước, v.v.):</h4>
+                <p>50.000 VNĐ</p>
+
+                <h4>Đã đặt cọc:</h4>
+                <p>- 100.000 VNĐ</p>
+
+                <!-- Tổng thanh toán (Cải tiến) -->
+                <div class="payment-summary modern">
+                    <h3>Tổng cần thu:</h3>
+                    <h2>450.000 VNĐ</h2>
+                </div>
+
+                <!-- Form nghiệp vụ (Cải tiến) -->
+                <div class="payment-form-section">
+                    <form id="payment-form">
+                        <div class="form-group">
+                            <label for="payment-method">Chọn phương thức thanh toán</label>
+                            <select id="payment-method" name="payment-method">
+                                <option value="cash">Tiền mặt</option>
+                                <option value="transfer">Chuyển khoản (Đã check)</option>
+                                <option value="online">Thanh toán Online (MoMo, ZaloPay)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="payment-notes">Ghi chú (nếu có)</label>
+                            <input type="text" id="payment-notes" name="payment-notes" placeholder="Khách chuyển khoản bằng SĐT...">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Footer modal (chứa các nút) -->
+            <div class="modal-footer">
+                <!-- Đã đảo vị trí nút -->
+                <button type="button" class="btn btn-secondary">Hủy</button>
+                <button type="button" class="btn btn-success"><i class="fas fa-check-double"></i> Xác nhận ĐÃ THANH TOÁN</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- === PROMPT 17: MODAL "CHI TIẾT HÓA ĐƠN" (ĐANG HIỂN THỊ) === -->
+    <div class="modal-overlay" id="invoice-details-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chi tiết Hóa đơn</h3>
+                <i class="fas fa-futbol logo-icon"></i>
+            </div>
+            <div class="modal-body invoice-body">
+                <h4>Hóa đơn:</h4>
+                <p>#HD20251116001</p>
+                
+                <h4>Ngày lập:</h4>
+                <p>16/11/2025 - 17:30</p>
+                
+                <hr>
+                
+                <h4>Khách hàng:</h4>
+                <p>Anh Võ Hữu Thái</p>
+                
+                <h4>Số điện thoại:</h4>
+                <p>09xxxxxxx</p>
+                
+                <hr>
+                
+                <h4 style="align-self: flex-start;">Dịch vụ:</h4>
+                <div class="invoice-services">
+                    <div><span>Tiền sân (Sân 2, 18:00 - 19:30)</span> <span>500.000 VNĐ</span></div>
+                    <div><span>Dịch vụ (Nước uống)</span> <span>50.000 VNĐ</span></div>
+                </div>
+                
+                <h4>Đã cọc:</h4>
+                <p>-100.000 VNĐ</p>
+                
+                <div class="invoice-total">
+                    <h3>Tổng thanh toán: 450.000 VNĐ</h3>
+                </div>
+                
+                <h4>Phương thức:</h4>
+                <p>Tiền mặt</p>
+                
+                <h4>Trạng thái:</h4>
+                <p><span class="badge badge-success">Đã thanh toán</span></p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Đóng</button>
+                <button type="button" class="btn btn-primary"><i class="fas fa-print"></i> In hóa đơn</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
