@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Quản lý Khách hàng - Thịnh Vượng</title>
+
+<style>
+  :root{
+    --bg:#f6f8fb; --card:#fff; --muted:#64748b; --primary:#2563eb;
+    --success:#10b981; --gold:#f59e0b; --silver:#94a3b8; --danger:#ef4444;
+    --radius:12px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:var(--bg); color:#0f172a}
+  a{color:inherit;text-decoration:none}
+  /* layout */
+  .app{display:flex;min-height:100vh}
+  .sidebar{
+    width:220px;background:#0b1220;color:#fff;padding:20px;border-right:1px solid rgba(15,23,42,0.05);
+    position:sticky;top:0;height:100vh;
+  }
+  .logo{font-weight:800;font-size:18px;margin-bottom:22px;display:flex;gap:8px;align-items:center}
+  .nav{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+  .nav li{padding:10px;border-radius:8px;cursor:pointer;color:rgba(255,255,255,0.9)}
+  .nav li.active{background:#123a7a}
+  .content{flex:1;padding:20px 24px;overflow:auto}
+
+  /* header */
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+  .page-title{font-size:20px;font-weight:700}
+  .top-actions{display:flex;gap:10px;align-items:center}
+  .btn{border:0;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+  .btn.primary{background:var(--primary);color:#fff;box-shadow:0 6px 18px rgba(37,99,235,0.12)}
+  .btn.ghost{background:#fff;border:1px solid rgba(15,23,42,0.06)}
+  .input, select {padding:10px 12px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);background:#fff;min-width:180px}
+  .search {
+    display:flex;align-items:center;gap:8px;background:#fff;padding:8px 10px;border-radius:12px;border:1px solid rgba(15,23,42,0.04);min-width:340px;
+  }
+  .search input{border:0;outline:0;background:transparent;font-size:14px}
+
+  /* KPI */
+  .kpi{display:flex;gap:12px;margin:14px 0 20px}
+  .kpi .card{background:var(--card);padding:14px;border-radius:12px;flex:1;box-shadow:0 6px 20px rgba(2,6,23,0.04);border:1px solid rgba(15,23,42,0.03)}
+  .kpi .title{font-size:13px;color:var(--muted)}
+  .kpi .value{font-size:20px;font-weight:800;margin-top:6px}
+
+  /* toolbar + table container */
+  .panel{background:var(--card);padding:14px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.04);border:1px solid rgba(15,23,42,0.03)}
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+  .toolbar-left{display:flex;gap:12px;align-items:center}
+  .toolbar-right{display:flex;gap:8px;align-items:center}
+
+  /* table */
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  thead th{background:#fbfdff;padding:12px;text-align:left;color:#475569;border-bottom:1px solid #eef2ff;font-weight:700}
+  tbody tr{background:#fff}
+  tbody tr:not(:last-child) td{border-bottom:1px solid #f1f5f9}
+  td{padding:12px;vertical-align:middle}
+  .col-customer{display:flex;gap:12px;align-items:center}
+  .avatar{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#34d399,#60a5fa);color:#fff;font-weight:700}
+  .cust-name{font-weight:700}
+  .cust-phone{color:var(--muted);font-size:13px;margin-top:4px}
+  .tag{display:inline-block;padding:6px 8px;border-radius:999px;font-weight:700;font-size:12px}
+  .tag.vip{background:linear-gradient(90deg,#f59e0b,#f97316);color:#fff}
+  .tag.gold{background:#fef3c7;color:#92400e}
+  .tag.silver{background:#eef2ff;color:#0f172a;border:1px solid rgba(15,23,42,0.04)}
+  .status.active{background:rgba(16,185,129,0.12);color:var(--success);padding:6px 8px;border-radius:10px;font-weight:700}
+  .status.off{background:#f1f5f9;color:#94a3b8;padding:6px 8px;border-radius:10px;font-weight:700}
+
+  .actions{position:relative}
+  .action-btn{background:transparent;border:0;padding:6px 8px;border-radius:8px;cursor:pointer}
+  .menu-pop{position:absolute;right:0;top:36px;background:#fff;border-radius:10px;padding:8px;border:1px solid #eef2ff;box-shadow:0 12px 30px rgba(2,6,23,0.06);min-width:180px;display:none;z-index:60}
+  .menu-pop.show{display:block}
+  .menu-pop button{width:100%;text-align:left;padding:8px;border:0;background:transparent;border-radius:6px;cursor:pointer}
+  .menu-pop button:hover{background:#fbf7ff}
+
+  /* Slide panel */
+  .slide-panel{position:fixed;right:0;top:0;height:100%;width:480px;max-width:90%;background:var(--card);box-shadow:-20px 0 40px rgba(2,6,23,0.12);transform:translateX(110%);transition:transform .28s ease;z-index:80;display:flex;flex-direction:column}
+  .slide-panel.open{transform:translateX(0)}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;padding:18px 18px;border-bottom:1px solid #eef2ff}
+  .panel-body{padding:16px;overflow:auto;flex:1}
+  .tabs{display:flex;gap:8px;padding:8px}
+  .tab{padding:8px 10px;border-radius:8px;cursor:pointer;background:#f8fafc}
+  .tab.active{background:#eef2ff;font-weight:700;color:var(--primary)}
+  .field{margin-bottom:10px}
+  .small{font-size:13px;color:var(--muted)}
+
+  /* history table small */
+  .history-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+  .history-table th, .history-table td{padding:8px;border-bottom:1px solid #f1f5f9;text-align:left}
+  .note-area{width:100%;min-height:120px;padding:10px;border-radius:8px;border:1px solid #eef2ff;background:#fff}
+
+  /* modal */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:flex;align-items:center;justify-content:center;z-index:120;display:none}
+  .modal-backdrop.show{display:flex}
+  .modal{width:520px;max-width:95%;background:#fff;border-radius:14px;padding:18px;box-shadow:0 20px 40px rgba(2,6,23,0.18)}
+  .form-row{display:flex;gap:8px;margin-bottom:10px}
+  .form-row input, .form-row select{flex:1;padding:10px;border-radius:8px;border:1px solid #eef2ff}
+
+  /* responsive */
+  @media(max-width:980px){
+    .sidebar{display:none}
+    .kpi{flex-direction:column}
+    .top-actions .search{min-width:180px}
+    .slide-panel{width:100%}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" aria-label="Main navigation">
+    <div class="logo">⚽ Thịnh Vượng</div>
+    <ul class="nav">
+      <li>Dashboard</li>
+      <li class="active">Quản lý Khách hàng</li>
+      <li>Quản lý Đặt sân</li>
+      <li>Quản lý Thanh toán</li>
+      <li>Cài đặt</li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="content">
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="page-title">Quản lý Khách hàng</div>
+
+      <div class="top-actions">
+        <div class="search" style="min-width:360px">
+          🔎
+          <input id="globalSearch" placeholder="Tìm kiếm theo Tên hoặc Số điện thoại..." />
+        </div>
+
+        <button class="btn ghost" id="btnFilter">Bộ lọc</button>
+        <button class="btn primary" id="btnAdd">+ Thêm Khách Hàng</button>
+      </div>
+    </div>
+
+    <!-- KPI -->
+    <div class="kpi">
+      <div class="card panel">
+        <div class="title">Tổng số khách hàng</div>
+        <div class="value" id="kpiTotal">--</div>
+      </div>
+      <div class="card panel">
+        <div class="title">Khách hàng mới (Tháng này)</div>
+        <div class="value" id="kpiNew">--</div>
+      </div>
+      <div class="card panel">
+        <div class="title">Khách hàng VIP</div>
+        <div class="value" id="kpiVIP">--</div>
+      </div>
+      <div class="card panel">
+        <div class="title">Tỷ lệ khách quay lại</div>
+        <div class="value" id="kpiReturn">--</div>
+      </div>
+    </div>
+
+    <!-- TABLE PANEL -->
+    <section class="panel" aria-labelledby="customerTable">
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div style="display:flex;gap:10px;align-items:center">
+            <input id="searchBar" class="input" placeholder="Tìm kiếm theo Tên hoặc SĐT..." />
+            <select id="filterTier" class="input">
+              <option value="all">Tất cả hạng</option>
+              <option value="vip">VIP</option>
+              <option value="gold">Vàng</option>
+              <option value="silver">Bạc</option>
+              <option value="normal">Thường</option>
+            </select>
+            <select id="filterStatus" class="input">
+              <option value="all">Tất cả trạng thái</option>
+              <option value="active">Đang hoạt động</option>
+              <option value="off">Đã vô hiệu hoá</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="toolbar-right">
+          <button class="btn ghost" id="btnExport">Xuất</button>
+          <button class="btn primary" id="btnAddTop">+ Thêm Khách Hàng</button>
+        </div>
+      </div>
+
+      <!-- DATA TABLE -->
+      <div style="overflow:auto">
+        <table id="customerTable" role="table">
+          <thead>
+            <tr>
+              <th>Khách hàng</th>
+              <th>Email</th>
+              <th>Hạng</th>
+              <th>Tổng chi tiêu</th>
+              <th>Lượt đặt</th>
+              <th>Trạng thái</th>
+              <th style="text-align:right">Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- rows injected -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- SLIDE PANEL (DETAIL) -->
+<aside class="slide-panel" id="detailPanel" aria-hidden="true">
+  <div class="panel-head">
+    <div>
+      <div style="font-weight:800" id="detailTitle">Chi tiết khách hàng</div>
+      <div class="small" id="detailSub">Thông tin nhanh</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn ghost" id="btnEdit">Sửa thông tin</button>
+      <button class="btn ghost" id="btnClosePanel">Đóng ✕</button>
+    </div>
+  </div>
+
+  <div class="panel-body">
+    <div class="tabs" role="tablist">
+      <div class="tab active" data-tab="info">Thông tin chung</div>
+      <div class="tab" data-tab="history">Lịch sử đặt sân</div>
+      <div class="tab" data-tab="notes">Ghi chú</div>
+    </div>
+
+    <!-- tab contents -->
+    <div id="tabContent">
+      <!-- info -->
+      <div class="tab-pane" data-pane="info">
+        <div style="display:flex;gap:14px;align-items:center;margin-bottom:14px">
+          <div style="width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,#34d399,#60a5fa);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px" id="detailAvatar">VH</div>
+          <div>
+            <div style="font-weight:800;font-size:18px" id="d_name">—</div>
+            <div class="small" id="d_phone">—</div>
+            <div class="small" id="d_email">—</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
+          <div class="small">Hạng hiện tại</div>
+          <div id="d_tier"></div>
+        </div>
+
+        <div style="margin-bottom:12px">
+          <div class="small" style="margin-bottom:6px">Ưu đãi & Mã giảm giá</div>
+          <div id="d_coupons" style="display:flex;gap:8px;flex-wrap:wrap">
+            <!-- coupons -->
+          </div>
+          <div style="margin-top:8px">
+            <button class="btn ghost" id="btnCreateCoupon">Tạo mã giảm giá mới</button>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn primary" id="btnResetPwd">Reset mật khẩu</button>
+          <button class="btn ghost" id="btnDisable">Vô hiệu hoá khách</button>
+        </div>
+      </div>
+
+      <!-- history -->
+      <div class="tab-pane" data-pane="history" style="display:none">
+        <div class="small" style="margin-bottom:8px">Lịch sử đặt sân (gần đây nhất)</div>
+        <table class="history-table">
+          <thead><tr><th>Ngày</th><th>Giờ</th><th>Sân</th><th>Tổng tiền</th><th>Trạng thái</th></tr></thead>
+          <tbody id="historyBody">
+            <!-- injected -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- notes -->
+      <div class="tab-pane" data-pane="notes" style="display:none">
+        <div class="small" style="margin-bottom:8px">Ghi chú nội bộ</div>
+        <textarea id="noteArea" class="note-area" placeholder="Ghi chú về khách (ví dụ: Khách quen, hay trễ, ưu tiên)..."></textarea>
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button class="btn primary" id="btnSaveNote">Lưu ghi chú</button>
+          <button class="btn ghost" id="btnClearNote">Xóa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MODAL ADD CUSTOMER -->
+<div class="modal-backdrop" id="modalAdd">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+    <h3 id="addTitle">Thêm khách hàng mới</h3>
+    <div class="form-row">
+      <input id="add_name" placeholder="Tên khách hàng" />
+      <input id="add_phone" placeholder="Số điện thoại" />
+    </div>
+    <div class="form-row">
+      <input id="add_email" placeholder="Email (nếu có)" />
+      <select id="add_tier">
+        <option value="normal">Thường</option>
+        <option value="silver">Bạc</option>
+        <option value="gold">Vàng</option>
+        <option value="vip">VIP</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+      <button class="btn ghost" id="btnCancelAdd">Hủy</button>
+      <button class="btn primary" id="btnSaveAdd">Thêm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========= MOCK DATA ========= */
+const customers = [
+  { id:1, name:'Võ Hữu Thái', phone:'090xxxx123', email:'thai@example.com', tier:'vip', spend:12500000, bookings:15, status:'active', coupons:['VIP10'] ,
+    history:[
+      {date:'2025-11-10', time:'19:00', pitch:'Sân 1', total:250000, state:'Hoàn thành'},
+      {date:'2025-10-05', time:'18:00', pitch:'Sân 3', total:300000, state:'Hoàn thành'}
+    ],
+    note:'Khách quen, ưu tiên sân đẹp'
+  },
+  { id:2, name:'Nguyễn Văn B', phone:'0912345678', email:'nvb@example.com', tier:'gold', spend:3200000, bookings:6, status:'active', coupons:[], history:[], note:'' },
+  { id:3, name:'Trần Thùy C', phone:'0933445566', email:'', tier:'silver', spend:800000, bookings:2, status:'off', coupons:[], history:[], note:'Đã vô hiệu hoá' },
+  { id:4, name:'Phạm D', phone:'0901122334', email:'pham.d@example.com', tier:'normal', spend:0, bookings:0, status:'active', coupons:[], history:[], note:'' },
+  { id:5, name:'Hoàng E', phone:'0933445567', email:'hoang@example.com', tier:'vip', spend:5600000, bookings:10, status:'active', coupons:['WELCOME5'], history:[], note:'' }
+];
+
+/* ========= HELPERS ========= */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+function formatVND(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ' ₫' }
+function avatarText(name){ const parts = name.split(' '); return (parts.length>1?parts[0][0]+parts[parts.length-1][0]:name.slice(0,2)).toUpperCase() }
+
+/* ========= RENDER KPI ========= */
+function renderKPI(){
+  const total = customers.length;
+  const newThisMonth = customers.filter(c => {
+    // mock: customers with id>3 are new this month
+    return c.id > 3;
+  }).length;
+  const vip = customers.filter(c => c.tier==='vip').length;
+  const returnRate = Math.round((customers.reduce((a,c)=>a + (c.bookings>0?1:0),0) / Math.max(1,total))*100);
+
+  $('#kpiTotal').textContent = total;
+  $('#kpiNew').textContent = newThisMonth;
+  $('#kpiVIP').textContent = vip;
+  $('#kpiReturn').textContent = returnRate + '%';
+}
+
+/* ========= RENDER TABLE ========= */
+function renderTable(list){
+  const tbody = $('#tableBody');
+  tbody.innerHTML = '';
+  list.forEach(c => {
+    const tr = document.createElement('tr');
+
+    // Customer column
+    const tdCustomer = document.createElement('td');
+    tdCustomer.innerHTML = `
+      <div class="col-customer">
+        <div class="avatar">${avatarText(c.name)}</div>
+        <div>
+          <div class="cust-name" style="cursor:pointer" data-id="${c.id}">${c.name}</div>
+          <div class="cust-phone">${c.phone}</div>
+        </div>
+      </div>
+    `;
+
+    // Email
+    const tdEmail = document.createElement('td');
+    tdEmail.textContent = c.email || '—';
+
+    // Tier
+    const tdTier = document.createElement('td');
+    const span = document.createElement('span'); span.className = 'tag ' + (c.tier==='vip'?'vip':c.tier==='gold'?'gold':c.tier==='silver'?'silver':''); span.textContent = c.tier.toUpperCase();
+    tdTier.appendChild(span);
+
+    // spend
+    const tdSpend = document.createElement('td'); tdSpend.textContent = formatVND(c.spend || 0);
+
+    // bookings
+    const tdBookings = document.createElement('td'); tdBookings.textContent = c.bookings || 0;
+
+    // status
+    const tdStatus = document.createElement('td'); tdStatus.innerHTML = `<div class="${c.status==='active'?'status active':'status off'}">${c.status==='active'?'Đang hoạt động':'Đã vô hiệu hoá'}</div>`;
+
+    // actions
+    const tdActions = document.createElement('td'); tdActions.style.textAlign='right';
+    tdActions.innerHTML = `
+      <div class="actions">
+        <button class="action-btn" data-id="${c.id}">⋯</button>
+        <div class="menu-pop" data-id="${c.id}">
+          <button class="view" data-id="${c.id}">👁 Xem chi tiết</button>
+          <button class="edit" data-id="${c.id}">✏️ Sửa thông tin</button>
+          <button class="disable" data-id="${c.id}">${c.status==='active'?'⛔ Vô hiệu hoá':'🔓 Kích hoạt lại'}</button>
+        </div>
+      </div>
+    `;
+
+    tr.appendChild(tdCustomer);
+    tr.appendChild(tdEmail);
+    tr.appendChild(tdTier);
+    tr.appendChild(tdSpend);
+    tr.appendChild(tdBookings);
+    tr.appendChild(tdStatus);
+    tr.appendChild(tdActions);
+
+    tbody.appendChild(tr);
+  });
+
+  attachRowEvents();
+}
+
+/* ========= EVENTS: action menu & view details ========= */
+function attachRowEvents(){
+  // click on avatar/name to open detail
+  $$('#tableBody .cust-name').forEach(el=>{
+    el.onclick = (e)=> openDetail(Number(e.currentTarget.dataset.id));
+  });
+
+  // action button toggle
+  $$('#tableBody .action-btn').forEach(btn=>{
+    const id = btn.dataset.id;
+    btn.onclick = (e)=>{
+      e.stopPropagation();
+      // close others
+      $$('.menu-pop').forEach(mp=>mp.classList.remove('show'));
+      const menu = document.querySelector(`.menu-pop[data-id="${id}"]`);
+      if(menu) menu.classList.toggle('show');
+    }
+  });
+
+  // menu actions
+  $$('.menu-pop .view').forEach(b=> b.onclick = (e)=> openDetail(Number(e.currentTarget.dataset.id)));
+  $$('.menu-pop .edit').forEach(b=> b.onclick = (e)=> {
+    const id = Number(e.currentTarget.dataset.id);
+    openEditForm(id);
+  });
+  $$('.menu-pop .disable').forEach(b=> b.onclick = (e)=> {
+    const id = Number(e.currentTarget.dataset.id);
+    toggleDisable(id);
+  });
+
+  // close menus on click outside
+  document.addEventListener('click', (ev)=>{
+    if(!ev.target.closest('.actions')) {
+      $$('.menu-pop').forEach(mp=>mp.classList.remove('show'));
+    }
+  });
+}
+
+/* ========= FILTER + SEARCH ========= */
+function applyFilters(){
+  const q = ($('#searchBar').value || '').trim().toLowerCase();
+  const tier = $('#filterTier').value;
+  const status = $('#filterStatus').value;
+
+  let list = customers.filter(c=>{
+    let ok = true;
+    if(q){
+      ok = c.name.toLowerCase().includes(q) || c.phone.toLowerCase().includes(q);
+    }
+    if(ok && tier !== 'all'){
+      ok = (c.tier === tier);
+    }
+    if(ok && status !== 'all'){
+      ok = (c.status === status);
+    }
+    return ok;
+  });
+  renderTable(list);
+}
+
+/* ========= OPEN / CLOSE DETAIL PANEL ========= */
+function openDetail(id){
+  const c = customers.find(x=>x.id===id);
+  if(!c) return;
+  $('#detailPanel').classList.add('open');
+  $('#detailPanel').setAttribute('aria-hidden','false');
+  $('#detailTitle').textContent = 'Chi tiết khách hàng: ' + c.name;
+  $('#detailSub').textContent = `${c.phone} • ${c.email || '—'}`;
+  $('#detailAvatar').textContent = avatarText(c.name);
+  $('#d_name').textContent = c.name;
+  $('#d_phone').textContent = c.phone;
+  $('#d_email').textContent = c.email || '—';
+  $('#d_tier').innerHTML = `<span class="tag ${c.tier==='vip'?'vip':c.tier==='gold'?'gold':c.tier==='silver'?'silver':''}">${c.tier.toUpperCase()}</span>`;
+
+  // coupons
+  const couponsEl = $('#d_coupons'); couponsEl.innerHTML='';
+  if(c.coupons && c.coupons.length){
+    c.coupons.forEach(code=>{
+      const b = document.createElement('div'); b.className='tag'; b.style.background='#eef2ff'; b.style.fontWeight=700; b.style.color='#0f172a'; b.textContent = code;
+      couponsEl.appendChild(b);
+    });
+  } else {
+    couponsEl.innerHTML = '<div class="small">Không có mã</div>';
+  }
+
+  // history
+  const hb = $('#historyBody'); hb.innerHTML='';
+  if(c.history && c.history.length){
+    c.history.forEach(h=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${h.date}</td><td>${h.time}</td><td>${h.pitch}</td><td>${formatVND(h.total)}</td><td>${h.state}</td>`;
+      hb.appendChild(tr);
+    });
+  } else {
+    hb.innerHTML = '<tr><td colspan="5" style="color:var(--muted)">Không có lịch sử</td></tr>';
+  }
+
+  // notes
+  $('#noteArea').value = c.note || '';
+}
+
+/* close panel */
+$('#btnClosePanel').onclick = ()=> {
+  $('#detailPanel').classList.remove('open');
+  $('#detailPanel').setAttribute('aria-hidden','true');
+}
+
+/* tabs in panel */
+$$('.tab').forEach(t=>{
+  t.onclick = ()=>{
+    $$('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const pane = t.dataset.tab;
+    $$('.tab-pane').forEach(p=> p.style.display = p.dataset.pane===pane ? 'block' : 'none');
+  }
+});
+
+/* save note */
+$('#btnSaveNote').onclick = ()=>{
+  const note = $('#noteArea').value;
+  const name = $('#detailTitle').textContent.replace('Chi tiết khách hàng: ','');
+  const cust = customers.find(c=>c.name===name);
+  if(cust){ cust.note = note; alert('Lưu ghi chú thành công'); }
+}
+
+/* Clear note */
+$('#btnClearNote').onclick = ()=> { $('#noteArea').value=''; }
+
+/* Reset password (mock) */
+$('#btnResetPwd').onclick = ()=> { alert('Reset mật khẩu (demo) — thông báo cho khách hàng'); }
+
+/* Create coupon (mock) */
+$('#btnCreateCoupon').onclick = ()=> {
+  const name = $('#detailTitle').textContent.replace('Chi tiết khách hàng: ','');
+  const cust = customers.find(c=>c.name===name);
+  if(!cust) return;
+  const code = prompt('Tạo mã giảm giá (ví dụ VIP20):');
+  if(code){ cust.coupons.push(code); openDetail(cust.id); alert('Tạo mã ' + code + ' cho ' + cust.name); }
+}
+
+/* Edit info (open add modal filled) */
+function openEditForm(id){
+  const c = customers.find(x=>x.id===id);
+  if(!c) return;
+  $('#modalAdd').classList.add('show');
+  $('#add_name').value = c.name;
+  $('#add_phone').value = c.phone;
+  $('#add_email').value = c.email;
+  $('#add_tier').value = c.tier;
+  $('#modalAdd').dataset.editId = id;
+}
+
+/* Toggle disable / enable */
+function toggleDisable(id){
+  const c = customers.find(x=>x.id===id);
+  if(!c) return;
+  if(c.status==='active'){
+    if(!confirm('Bạn có chắc muốn vô hiệu hoá khách này?')) return;
+    c.status='off';
+  } else {
+    c.status='active';
+  }
+  renderTable(customers);
+  renderKPI();
+}
+
+/* ========= ADD CUSTOMER MODAL ========= */
+$('#btnAdd').onclick = ()=> openAddModal();
+$('#btnAddTop').onclick = ()=> openAddModal();
+function openAddModal(){
+  $('#modalAdd').classList.add('show');
+  delete $('#modalAdd').dataset.editId;
+  $('#add_name').value=''; $('#add_phone').value=''; $('#add_email').value=''; $('#add_tier').value='normal';
+}
+$('#btnCancelAdd').onclick = ()=> { $('#modalAdd').classList.remove('show') }
+$('#modalAdd').onclick = (e)=> { if(e.target===$('#modalAdd')) $('#modalAdd').classList.remove('show') }
+
+$('#btnSaveAdd').onclick = ()=>{
+  const name = $('#add_name').value.trim();
+  const phone = $('#add_phone').value.trim();
+  if(!name || !phone){ alert('Vui lòng nhập tên và số điện thoại'); return; }
+  const email = $('#add_email').value.trim();
+  const tier = $('#add_tier').value;
+  const editId = $('#modalAdd').dataset.editId;
+  if(editId){
+    const cust = customers.find(c=>c.id===Number(editId));
+    cust.name = name; cust.phone=phone; cust.email=email; cust.tier=tier;
+    delete $('#modalAdd').dataset.editId;
+    $('#modalAdd').classList.remove('show');
+    renderTable(customers); renderKPI();
+    alert('Cập nhật thành công');
+    return;
+  }
+  const id = customers.length ? Math.max(...customers.map(c=>c.id))+1 : 1;
+  customers.unshift({ id, name, phone, email, tier, spend:0, bookings:0, status:'active', coupons:[], history:[], note:'' });
+  $('#modalAdd').classList.remove('show');
+  renderTable(customers);
+  renderKPI();
+  alert('Thêm khách hàng thành công');
+}
+
+/* Export (mock) */
+$('#btnExport').onclick = ()=> {
+  const csv = customers.map(c=> [c.name,c.phone,c.email,c.tier,c.spend,c.bookings,c.status].join(',')).join('\\n');
+  const blob = new Blob([csv],{type:'text/csv'}), url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='customers.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* search behavior */
+$('#globalSearch').addEventListener('keydown', (e)=> {
+  if(e.key==='Enter'){ $('#searchBar').value = e.target.value; applyFilters(); }
+});
+$('#searchBar').addEventListener('input', ()=> applyFilters());
+$('#filterTier').addEventListener('change', ()=> applyFilters());
+$('#filterStatus').addEventListener('change', ()=> applyFilters());
+
+/* initial render */
+renderKPI();
+renderTable(customers);
+
+/* util functions */
+function formatVND(n){ return (n||0).toString().replace(/\\B(?=(\\d{3})+(?!\\d))/g, ".") + ' ₫' }
+function avatarText(name){ const p = name.trim().split(' '); return (p.length>1 ? p[0][0]+p[p.length-1][0] : name.slice(0,2)).toUpperCase() }
+
+/* small UX: clicking outside panel closes it */
+document.addEventListener('click', (e)=>{
+  if(!e.target.closest('.slide-panel') && !e.target.closest('.menu-pop') && !e.target.closest('.action-btn') && !e.target.closest('.cust-name')) {
+    // do nothing (we want panel to stay until close)
+  }
+});
+
+/* keyboard ESC to close panel or modal */
+document.addEventListener('keydown',(e)=>{
+  if(e.key==='Escape'){
+    $('#detailPanel').classList.remove('open');
+    $('#modalAdd').classList.remove('show');
+  }
+});
+</script>
+</body>
+</html>

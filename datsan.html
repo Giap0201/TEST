@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Đặt sân - Hệ thống Quản lý Sân bóng Thịnh Vượng</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+        :root {
+            --primary-color: #3b82f6; /* Blue */
+            --success-color: #22c55e; /* Green */
+            --warning-color: #f59e0b; /* Orange/Yellow */
+            --danger-color: #ef4444; /* Red */
+            
+            /* CẬP NHẬT MÀU SẮC THEO YÊU CẦU */
+            --info-color: #f59e0b; /* Cam cho "Đã đặt" (Yêu cầu: cam = đã đặt) */
+            --playing-color: #22c55e; /* Xanh lá cho "Đang đá" (Yêu cầu: xanh lá) */
+            --maintenance-color: #ef4444; /* Đỏ cho "Bảo trì" (Yêu cầu: đỏ = bảo trì) */
+            
+            --bg-color: #f3f4f6; /* Light gray background */
+            --card-bg: #ffffff;
+            --text-color: #374151; /* Dark gray text */
+            --light-text-color: #6b7280;
+            --border-color: #e5e7eb;
+            --sidebar-width: 80px;
+            --header-height: 60px;
+            --card-border-radius: 8px;
+            --card-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--card-bg);
+            padding-top: var(--header-height);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            position: fixed; /* Fixed sidebar */
+            height: 100%;
+            left: 0;
+            top: 0;
+            z-index: 1100;
+        }
+
+        .sidebar-logo {
+            padding: 20px 0;
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .sidebar-logo i {
+            font-size: 32px;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            width: 100%;
+        }
+
+        .sidebar-nav li {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--light-text-color);
+            padding: 10px 0;
+            font-size: 13px;
+            transition: background-color 0.2s, color 0.2s;
+            position: relative;
+        }
+
+        /* Trạng thái "active" cho icon "Quản lý Đặt sân" */
+        .sidebar-nav a.active,
+        .sidebar-nav a:hover {
+            color: var(--primary-color);
+            background-color: var(--bg-color);
+        }
+        .sidebar-nav a.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--primary-color);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .sidebar-nav a i {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            margin-left: var(--sidebar-width); /* Offset for fixed sidebar */
+        }
+
+        /* Header */
+        .header {
+            width: calc(100% - var(--sidebar-width)); /* Adjust width for sidebar */
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            background-color: var(--card-bg);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-shadow: var(--card-shadow);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            padding: 8px 15px 8px 35px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-border-radius);
+            font-size: 14px;
+            width: 250px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--light-text-color);
+            font-size: 16px;
+        }
+
+        .header-icon {
+            color: var(--light-text-color);
+            font-size: 18px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .header-icon:hover {
+            color: var(--primary-color);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-profile span {
+            font-weight: 500;
+        }
+
+        .user-profile img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Booking Management Content */
+        .booking-management-content {
+            padding: calc(var(--header-height) + 30px) 30px 30px 30px; /* Adjust padding for fixed header */
+            flex-grow: 1;
+        }
+
+        /* 5.1. Thanh tiêu đề và Bộ lọc */
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap; /* Cho phép wrap trên màn hình nhỏ */
+            gap: 15px;
+        }
+
+        .content-header h2 {
+            font-size: 28px; /* Chữ "Lịch đặt sân" lớn, rõ ràng */
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .main-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background-color 0.2s, color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color); /* Nút "+ Tạo Đặt Sân Mới" màu xanh dương */
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb; /* Darker blue */
+        }
+
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap; /* Allow filters to wrap on smaller screens */
+        }
+
+        .filter-bar label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .filter-bar input[type="date"],
+        .filter-bar select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: var(--card-bg);
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .filter-bar input[type="date"]:focus,
+        .filter-bar select:focus {
+            border-color: var(--primary-color);
+        }
+
+        /* 5.2. Lịch sân trực quan (Visual Schedule View) */
+        .schedule-view {
+            background-color: var(--card-bg);
+            border-radius: var(--card-border-radius);
+            box-shadow: var(--card-shadow);
+            overflow-x: auto; /* Allow horizontal scrolling for schedule */
+            min-height: 600px; /* Ensure enough height */
+        }
+
+        .schedule-grid {
+            display: grid;
+            /* Cột đầu tiên (Giờ) + 5 cột sân (linh hoạt, min 150px) */
+            grid-template-columns: 60px repeat(5, minmax(150px, 1fr)); 
+            border-collapse: collapse;
+            min-width: 900px; /* Minimum width to prevent squishing */
+        }
+
+        .grid-header, .grid-time-cell, .grid-field-cell {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            position: sticky; /* Sticky header */
+            top: 0;
+            z-index: 50;
+        }
+
+        .grid-header:first-child {
+            background-color: var(--card-bg); /* Corner cell */
+            z-index: 51;
+            left: 0;
+            position: sticky;
+        }
+
+        .grid-time-cell {
+            background-color: var(--bg-color);
+            font-weight: normal;
+            position: sticky; /* Sticky time column */
+            left: 0;
+            z-index: 40;
+        }
+
+        .grid-field-cell {
+            min-height: 60px; /* Chiều cao cho mỗi khung giờ */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-color: var(--card-bg); /* Nền trắng cho ô trống */
+            transition: background-color 0.2s;
+        }
+
+        /* Ô trống (Empty Cell) */
+        .grid-field-cell.available:hover {
+            background-color: #f9fafb; /* Xanh lá nhạt (hoặc xám rất nhạt) khi hover */
+        }
+
+        .add-booking-btn {
+            background-color: var(--success-color);
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0; /* Ẩn nút "+" */
+            transition: opacity 0.2s, transform 0.2s;
+            transform: scale(0.8);
+            border: none;
+        }
+
+        /* Hiện nút "+" khi hover vào ô trống */
+        .grid-field-cell.available:hover .add-booking-btn {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Thẻ Đặt sân (Booking Card) bên trong ô */
+        .booking-card {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            border-radius: 4px;
+            padding: 8px;
+            color: white;
+            font-size: 12px;
+            text-align: left;
+            cursor: pointer;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
+            transition: background-color 0.2s, transform 0.1s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden; /* Hide overflow text */
+        }
+
+        .booking-card:hover {
+            transform: translateY(-2px);
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+        }
+
+        /* Dòng 1: Tên khách hàng (In đậm) */
+        .booking-card .customer-name {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        /* Dòng 2: SĐT */
+        .booking-card .customer-phone {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+        /* Dòng 3: Status Tag */
+        .booking-card .status-tag {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            align-self: flex-start;
+            margin-top: 4px;
+        }
+
+        /* Ô đã đặt (Booked Cell) - Màu Cam */
+        .booking-card.status-booked {
+            background-color: var(--info-color); 
+        }
+        /* Ô đang đá - Màu Xanh lá */
+        .booking-card.status-playing {
+            background-color: var(--playing-color);
+        }
+        /* Ô đang bảo trì (Maintenance Cell) - Màu Đỏ */
+        .booking-card.status-maintenance {
+            background-color: var(--maintenance-color);
+            cursor: default;
+            justify-content: center; /* Căn giữa nội dung bảo trì */
+            align-items: center;
+        }
+        .booking-card.status-maintenance .status-tag {
+            background-color: transparent;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .booking-card.status-maintenance i {
+            margin-right: 5px;
+            font-size: 14px;
+        }
+
+
+        /* Popup Styles */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Mờ nền */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000; /* Đảm bảo popup nằm trên tất cả */
+            visibility: hidden; /* Mặc định ẩn */
+            opacity: 0;
+            transition: visibility 0.3s, opacity 0.3s;
+        }
+
+        .popup-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .popup-content {
+            background-color: var(--card-bg);
+            border-radius: var(--card-border-radius);
+            box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 15px;
+            width: 90%;
+            max-width: 500px;
+            transform: translateY(-20px); /* Hiệu ứng nhỏ khi mở */
+            transition: transform 0.3s ease-out;
+            max-height: 90vh; /* Limit height for scrollability */
+            overflow-y: auto; /* Enable scroll if content is too long */
+        }
+
+        .popup-overlay.active .popup-content {
+            transform: translateY(0);
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 25px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky; /* Sticky header for scrollable content */
+            top: 0;
+            background-color: var(--card-bg);
+            z-index: 2001;
+        }
+
+        .popup-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .popup-header .close-popup-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: var(--light-text-color);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .popup-header .close-popup-btn:hover {
+            color: var(--danger-color);
+        }
+
+        .popup-body {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 15px;
+            color: var(--text-color);
+            background-color: var(--bg-color); /* Nền nhẹ cho input */
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); /* Shadow nhẹ khi focus */
+        }
+
+        /* Trường "Sân" và "Giờ" tự động điền sẵn */
+        .form-group input[readonly] {
+            background-color: #e9ecef; 
+            cursor: not-allowed;
+            border-color: #ced4da;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d; /* Gray */
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268; /* Darker gray */
+        }
+
+        /* Popup: Chi tiết Đặt sân */
+        .booking-detail-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .booking-detail-info .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .booking-detail-info .info-label {
+            font-size: 13px;
+            color: var(--light-text-color);
+            margin-bottom: 4px;
+        }
+        .booking-detail-info .info-value {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        /* Trạng thái trong popup chi tiết */
+        .booking-detail-info .info-value.status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+            align-self: flex-start;
+        }
+        .booking-detail-info .info-value.status-deposit { background-color: var(--warning-color); }
+        .booking-detail-info .info-value.status-pending { background-color: var(--primary-color); }
+        .booking-detail-info .info-value.status-paid { background-color: var(--success-color); }
+        .booking-detail-info .info-value.status-cancelled { background-color: var(--danger-color); }
+
+        /* Các nút hành động: Check-in, Sửa, Huỷ, In... */
+        .booking-detail-actions {
+            display: flex;
+            justify-content: flex-start; 
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+        .booking-detail-actions .btn {
+            min-width: 100px;
+        }
+        .btn-checkin { background-color: var(--success-color); color: white; }
+        .btn-checkin:hover { background-color: #16a34a; }
+        .btn-edit { background-color: var(--primary-color); color: white; }
+        .btn-edit:hover { background-color: #2563eb; }
+        .btn-cancel { background-color: var(--danger-color); color: white; }
+        .btn-cancel:hover { background-color: #dc2626; }
+        .btn-invoice { background-color: #4b5563; color: white; }
+        .btn-invoice:hover { background-color: #374151; }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .header {
+                left: 60px;
+                width: calc(100% - 60px);
+            }
+            .main-content {
+                margin-left: 60px;
+            }
+            .search-bar input {
+                width: 180px;
+            }
+            .schedule-grid {
+                grid-template-columns: 60px repeat(5, minmax(120px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0 15px;
+                left: 50px;
+                width: calc(100% - 50px);
+            }
+            .main-content {
+                margin-left: 50px;
+            }
+            .header h1 {
+                display: none; /* Hide title on very small screens */
+            }
+            .search-bar {
+                flex-grow: 1; /* Make search bar take more space */
+            }
+            .search-bar input {
+                width: 100%;
+            }
+            .user-profile span {
+                display: none; /* Hide username */
+            }
+            .sidebar {
+                width: 50px;
+            }
+            .sidebar-nav a span {
+                display: none; /* Hide text, show only icons */
+            }
+            .booking-management-content {
+                padding: calc(var(--header-height) + 20px) 15px 20px 15px;
+            }
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .main-actions {
+                width: 100%;
+                justify-content: center;
+            }
+            .filter-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .filter-bar > * {
+                width: 100%;
+            }
+            .schedule-grid {
+                grid-template-columns: 50px repeat(5, minmax(100px, 1fr));
+                min-width: 600px; /* Still need some min-width for schedule */
+            }
+            .grid-header, .grid-time-cell, .grid-field-cell {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+            .booking-detail-info {
+                grid-template-columns: 1fr;
+            }
+            .booking-detail-actions {
+                flex-direction: column;
+            }
+            .booking-detail-actions .btn {
+                width: 100%; /* Make buttons full width */
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-home"></i> <!-- Hoặc fa-futbol -->
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#"><i class="fas fa-chart-line"></i><span>Trang chủ</span></a></li>
+                    <!-- Icon "Quản lý Đặt sân" đang ở trạng thái active -->
+                    <li><a href="#" class="active"><i class="fas fa-calendar-check"></i><span>Đặt sân</span></a></li>
+                    <li><a href="#"><i class="fas fa-futbol"></i><span>Sân bóng</span></a></li>
+                    <li><a href="#"><i class="fas fa-users"></i><span>Khách hàng</span></a></li>
+                    <li><a href="#"><i class="fas fa-file-invoice-dollar"></i><span>Thanh toán</span></a></li>
+                    <li><a href="#"><i class="fas fa-user-tie"></i><span>Nhân viên</span></a></li>
+                    <li><a href="#"><i class="fas fa-chart-pie"></i><span>Báo cáo</span></a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h1>Trang chủ Dashboard</h1>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Tìm khách hàng, mã đặt sân...">
+                    </div>
+                    <i class="fas fa-bell header-icon"></i>
+                    <div class="user-profile">
+                        <span>Chủ Sân</span>
+                        <img src="https://placehold.co/35x35/3b82f6/ffffff?text=CS" alt="User Avatar">
+                    </div>
+                </div>
+            </header>
+
+            <!-- 5. Thiết kế chi tiết Khu vực nội dung chính -->
+            <main class="booking-management-content">
+                <!-- 5.1. Thanh tiêu đề và Bộ lọc -->
+                <div class="content-header">
+                    <h2>Lịch đặt sân</h2>
+                    <div class="main-actions">
+                        <!-- Nút "+ Tạo Đặt Sân Mới" -->
+                        <button class="btn btn-primary" id="create-new-booking-btn">
+                            <i class="fas fa-plus"></i> Tạo Đặt Sân Mới
+                        </button>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <!-- Bộ lọc ngày -->
+                    <input type="date" id="date-picker">
+                    <!-- Bộ lọc trạng thái -->
+                    <select id="status-filter">
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="pending">Chờ check-in</option>
+                        <option value="playing">Đang đá</option>
+                        <option value="completed">Hoàn thành</option>
+                        <option value="cancelled">Đã huỷ</option>
+                        <option value="maintenance">Đang bảo trì</option>
+                    </select>
+                    <!-- Bộ lọc sân -->
+                    <select id="field-filter">
+                        <option value="all">Tất cả sân</option>
+                        <option value="field1">Sân 1 (5v5)</option>
+                        <option value="field2">Sân 2 (5v5)</option>
+                        <option value="field3">Sân 3 (7v7)</option>
+                        <option value="field4">Sân 4 (7v7)</option>
+                        <option value="field5">Sân 5 (9v9)</option>
+                    </select>
+                </div>
+
+                <!-- 5.2. Lịch sân trực quan -->
+                <div class="schedule-view">
+                    <div class="schedule-grid" id="schedule-grid">
+                        <!-- Các cột (Columns) -->
+                        <div class="grid-header">Giờ</div>
+                        <div class="grid-header">Sân 1 (5v5)</div>
+                        <div class="grid-header">Sân 2 (5v5)</div>
+                        <div class="grid-header">Sân 3 (7v7)</div>
+                        <div class="grid-header">Sân 4 (7v7)</div>
+                        <div class="grid-header">Sân 5 (9v9)</div>
+
+                        <!-- Các hàng (Rows) - Ví dụ (JS sẽ tạo thêm) -->
+                        
+                        <!-- 7:00 -->
+                        <div class="grid-time-cell">7:00</div>
+                        <!-- Ô trống (Empty Cell) -->
+                        <div class="grid-field-cell available" data-field="Sân 1 (5v5)" data-time="7:00">
+                            <button class="add-booking-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <div class="grid-field-cell available" data-field="Sân 2 (5v5)" data-time="7:00">
+                            <button class="add-booking-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="7:00">
+                            <button class="add-booking-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <div class="grid-field-cell available" data-field="Sân 4 (7v7)" data-time="7:00">
+                            <button class="add-booking-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <div class="grid-field-cell available" data-field="Sân 5 (9v9)" data-time="7:00">
+                            <button class="add-booking-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+
+                        <!-- 8:00 -->
+                        <div class="grid-time-cell">8:00</div>
+                        <div class="grid-field-cell available" data-field="Sân 1 (5v5)" data-time="8:00">
+                            <button class="add-booking-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <!-- Ô đã đặt (Booked Cell) - Màu Cam -->
+                        <div class="grid-field-cell" data-field="Sân 2 (5v5)" data-time="8:00">
+                            <div class="booking-card status-booked" data-booking-id="B001">
+                                <span class="customer-name">Võ Hữu Thái</span>
+                                <span class="customer-phone">090xxxx123</span>
+                                <span class="status-tag">Đã cọc</span>
+                            </div>
+                        </div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="8:00">
+                            <button class="add-booking-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <div class="grid-field-cell available" data-field="Sân 4 (7v7)" data-time="8:00">
+                            <button class="add-booking-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <!-- Ô đang bảo trì (Maintenance Cell) - Màu Đỏ -->
+                        <div class="grid-field-cell" data-field="Sân 5 (9v9)" data-time="8:00">
+                            <div class="booking-card status-maintenance" data-booking-id="M001">
+                                <span class="status-tag"><i class="fas fa-tools"></i> Đang bảo trì</span>
+                            </div>
+                        </div>
+
+                        <!-- 9:00 -->
+                        <div class="grid-time-cell">9:00</div>
+                        <!-- Ô đang đá - Màu Xanh Lá -->
+                        <div class="grid-field-cell" data-field="Sân 1 (5v5)" data-time="9:00">
+                            <div class="booking-card status-playing" data-booking-id="B002">
+                                <span class="customer-name">Nguyễn Văn A</span>
+                                <span class="customer-phone">091xxxx456</span>
+                                <span class="status-tag">Đang đá</span>
+                            </div>
+                        </div>
+                        <div class="grid-field-cell available" data-field="Sân 2 (5v5)" data-time="9:00">
+                            <button class="add-booking-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="9:00">
+                            <button class="add-booking-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <!-- Ô đã đặt (Chờ TT) -->
+                        <div class="grid-field-cell" data-field="Sân 4 (7v7)" data-time="9:00">
+                            <div class="booking-card status-booked" data-booking-id="B003">
+                                <span class="customer-name">Trần Thị B</span>
+                                <span class="customer-phone">093xxxx789</span>
+                                <span class="status-tag">Chờ TT</span>
+                            </div>
+                        </div>
+                        <div class="grid-field-cell available" data-field="Sân 5 (9v9)" data-time="9:00">
+                            <button class="add-booking-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+
+                        <!-- Các khung giờ còn lại (JS sẽ tạo hoặc hard-code) -->
+                        <div class="grid-time-cell">10:00</div>
+                        <div class="grid-field-cell available" data-field="Sân 1 (5v5)" data-time="10:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 2 (5v5)" data-time="10:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="10:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 4 (7v7)" data-time="10:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 5 (9v9)" data-time="10:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+
+                        <div class="grid-time-cell">11:00</div>
+                        <div class="grid-field-cell available" data-field="Sân 1 (5v5)" data-time="11:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 2 (5v5)" data-time="11:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="11:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 4 (7v7)" data-time="11:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 5 (9v9)" data-time="11:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+
+                        <div class="grid-time-cell">12:00</div>
+                        <div class="grid-field-cell available" data-field="Sân 1 (5v5)" data-time="12:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 2 (5v5)" data-time="12:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="12:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 4 (7v7)" data-time="12:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 5 (9v9)" data-time="12:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+
+                        <div class="grid-time-cell">13:00</div>
+                        <div class="grid-field-cell available" data-field="Sân 1 (5v5)" data-time="13:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 2 (5v5)" data-time="13:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="13:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 4 (7v7)" data-time="13:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 5 (9v9)" data-time="13:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+
+                        <div class="grid-time-cell">14:00</div>
+                        <div class="grid-field-cell available" data-field="Sân 1 (5v5)" data-time="14:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 2 (5v5)" data-time="14:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="14:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 4 (7v7)" data-time="14:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 5 (9v9)" data-time="14:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+
+                        <div class="grid-time-cell">15:00</div>
+                        <div class="grid-field-cell available" data-field="Sân 1 (5v5)" data-time="15:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 2 (5v5)" data-time="15:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="15:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 4 (7v7)" data-time="15:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 5 (9v9)" data-time="15:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+
+                        <div class="grid-time-cell">16:00</div>
+                        <div class="grid-field-cell available" data-field="Sân 1 (5v5)" data-time="16:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 2 (5v5)" data-time="16:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="16:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 4 (7v7)" data-time="16:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 5 (9v9)" data-time="16:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+
+                        <div class="grid-time-cell">17:00</div>
+                        <div class="grid-field-cell available" data-field="Sân 1 (5v5)" data-time="17:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 2 (5v5)" data-time="17:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="17:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 4 (7v7)" data-time="17:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 5 (9v9)" data-time="17:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+
+                        <div class="grid-time-cell">18:00</div>
+                        <div class="grid-field-cell available" data-field="Sân 1 (5v5)" data-time="18:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 2 (5v5)" data-time="18:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="18:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 4 (7v7)" data-time="18:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 5 (9v9)" data-time="18:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+
+                        <div class="grid-time-cell">19:00</div>
+                        <div class="grid-field-cell available" data-field="Sân 1 (5v5)" data-time="19:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 2 (5v5)" data-time="19:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="19:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 4 (7v7)" data-time="19:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 5 (9v9)" data-time="19:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+
+                        <div class="grid-time-cell">20:00</div>
+                        <div class="grid-field-cell available" data-field="Sân 1 (5v5)" data-time="20:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 2 (5v5)" data-time="20:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="20:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 4 (7v7)" data-time="20:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 5 (9v9)" data-time="20:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+
+                        <div class="grid-time-cell">21:00</div>
+                        <div class="grid-field-cell available" data-field="Sân 1 (5v5)" data-time="21:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 2 (5v5)" data-time="21:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="21:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 4 (7v7)" data-time="21:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 5 (9v9)" data-time="21:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+
+                        <div class="grid-time-cell">22:00</div>
+                        <div class="grid-field-cell available" data-field="Sân 1 (5v5)" data-time="22:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 2 (5v5)" data-time="22:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 3 (7v7)" data-time="22:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 4 (7v7)" data-time="22:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+                        <div class="grid-field-cell available" data-field="Sân 5 (9v9)" data-time="22:00"><button class="add-booking-btn"><i class="fas fa-plus"></i></button></div>
+
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 5.3. Tương tác: Popup (Modal) "Tạo Đặt Sân Mới" -->
+    <div id="create-booking-popup-overlay" class="popup-overlay">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2>Tạo Đơn Đặt Sân Mới</h2>
+                <button class="close-popup-btn">&times;</button>
+            </div>
+            <div class="popup-body">
+                <form id="create-booking-form">
+                    <div class="form-group">
+                        <label for="new-field-name">Sân:</label>
+                        <!-- Trường "Sân" được tự động điền sẵn -->
+                        <input type="text" id="new-field-name" name="fieldName" value="" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-booking-time">Khung giờ:</label>
+                        <!-- Trường "Giờ" được tự động điền sẵn -->
+                        <input type="text" id="new-booking-time" name="bookingTime" value="" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-customer-name">Tên khách hàng:</label>
+                        <input type="text" id="new-customer-name" name="customerName" placeholder="Nhập tên khách hàng (hoặc SĐT để tìm)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-customer-phone">Số điện thoại:</label>
+                        <input type="tel" id="new-customer-phone" name="customerPhone" placeholder="Nhập số điện thoại" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-booking-date">Ngày đặt:</label>
+                        <input type="date" id="new-booking-date" name="bookingDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-price">Giá:</label>
+                        <input type="number" id="new-price" name="price" value="200000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-status">Trạng thái:</label>
+                        <select id="new-status" name="status">
+                            <option value="deposit">Đã cọc</option>
+                            <option value="pending">Chờ thanh toán (vãng lai)</option>
+                            <option value="paid">Đã thanh toán (toàn bộ)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-notes">Ghi chú:</label>
+                        <textarea id="new-notes" name="notes" rows="3" placeholder="Ghi chú thêm (nếu có)"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary close-popup-btn">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Xác nhận Đặt sân</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5.3. Tương tác: Popup (Modal) "Chi tiết Đặt sân" -->
+    <div id="booking-detail-popup-overlay" class="popup-overlay">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2>Chi tiết Đặt sân</h2>
+                <button class="close-popup-btn">&times;</button>
+            </div>
+            <div class="popup-body">
+                <div class="booking-detail-info">
+                    <div class="info-item">
+                        <span class="info-label">Khách hàng:</span>
+                        <span class="info-value" id="detail-customer-name">Võ Hữu Thái</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Số điện thoại:</span>
+                        <span class="info-value" id="detail-customer-phone">090xxxx123</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value" id="detail-customer-email">thai.vh@email.com</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Ngày đặt:</span>
+                        <span class="info-value" id="detail-booking-date">16/11/2025</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Giờ đặt:</span>
+                        <span class="info-value" id="detail-booking-time">8:00 - 9:00</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Sân:</span>
+                        <span class="info-value" id="detail-field-name">Sân 2 (5v5)</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Tổng tiền:</span>
+                        <span class="info-value" id="detail-total-price">200.000 VNĐ</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Trạng thái:</span>
+                        <span class="info-value status status-deposit" id="detail-status">Đã cọc</span>
+                    </div>
+                    <div class="info-item" style="grid-column: span 2;">
+                        <span class="info-label">Ghi chú:</span>
+                        <span class="info-value" id="detail-notes">Bù cọc 50k</span>
+                    </div>
+                </div>
+                <!-- Các nút hành động quan trọng -->
+                <div class="booking-detail-actions">
+                    <button class="btn btn-checkin" id="checkin-btn"><i class="fas fa-check-circle"></i> Check-in</button>
+                    <button class="btn btn-edit"><i class="fas fa-edit"></i> Sửa thông tin</button>
+                    <button class="btn btn-cancel"><i class="fas fa-times-circle"></i> Huỷ sân</button>
+                    <button class="btn btn-invoice"><i class="fas fa-print"></i> In hoá đơn</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Elements ---
+            const createBookingPopupOverlay = document.getElementById('create-booking-popup-overlay');
+            const bookingDetailPopupOverlay = document.getElementById('booking-detail-popup-overlay');
+            const closePopupButtons = document.querySelectorAll('.close-popup-btn');
+            const createNewBookingBtn = document.getElementById('create-new-booking-btn');
+            const createBookingForm = document.getElementById('create-booking-form');
+            const scheduleGrid = document.getElementById('schedule-grid');
+            const datePicker = document.getElementById('date-picker');
+            const checkinBtn = document.getElementById('checkin-btn');
+            const cancelBookingBtn = document.querySelector('.btn-cancel'); // Nút huỷ sân
+
+            // Form fields for Create Booking Popup
+            const newFieldNameInput = document.getElementById('new-field-name');
+            const newBookingTimeInput = document.getElementById('new-booking-time');
+            const newBookingDateInput = document.getElementById('new-booking-date');
+
+            // Detail fields for Booking Detail Popup
+            const detailCustomerName = document.getElementById('detail-customer-name');
+            const detailCustomerPhone = document.getElementById('detail-customer-phone');
+            const detailCustomerEmail = document.getElementById('detail-customer-email');
+            const detailBookingDate = document.getElementById('detail-booking-date');
+            const detailBookingTime = document.getElementById('detail-booking-time');
+            const detailFieldName = document.getElementById('detail-field-name');
+            const detailTotalPrice = document.getElementById('detail-total-price');
+            const detailStatus = document.getElementById('detail-status');
+            const detailNotes = document.getElementById('detail-notes');
+
+            // Biến tạm để lưu thẻ đang được chọn
+            let currentBookingCard = null; 
+
+            // --- Utility Functions ---
+            const getFormattedDate = (date = new Date()) => {
+                // Giả sử hôm nay là 16/11/2025 để khớp với yêu cầu
+                // const today = new Date('2025-11-16T12:00:00');
+                const today = new Date(date); // Sử dụng ngày hiện tại
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            };
+
+            const displayFormattedDate = (dateString) => {
+                const [year, month, day] = dateString.split('-');
+                return `${day}/${month}/${year}`;
+            };
+
+            // --- Popup Management ---
+            const showPopup = (popupElement, fieldName = '', timeSlot = '') => {
+                if (popupElement === createBookingPopupOverlay) {
+                    // Tự động điền sẵn "Sân" và "Giờ"
+                    newFieldNameInput.value = fieldName;
+                    newBookingTimeInput.value = timeSlot ? `${timeSlot}:00 - ${parseInt(timeSlot) + 1}:00` : '';
+                    // Tự động điền ngày đã chọn
+                    newBookingDateInput.value = datePicker.value; 
+                }
+                popupElement.classList.add('active');
+            };
+
+            const hidePopup = (popupElement) => {
+                popupElement.classList.remove('active');
+                if (popupElement === createBookingPopupOverlay) {
+                    createBookingForm.reset(); // Clear form fields
+                }
+                currentBookingCard = null; // Clear reference
+            };
+
+            // --- Event Listeners ---
+
+            // Set initial date for date picker
+            // Sửa lại: Dùng ngày hiện tại của hệ thống thay vì hard-code
+            datePicker.value = getFormattedDate(new Date());
+
+            // 1. Mở Popup "Tạo Đặt Sân Mới" (Nút chính)
+            createNewBookingBtn.addEventListener('click', () => {
+                // Không điền sẵn sân và giờ
+                showPopup(createBookingPopupOverlay, '', '');
+                // Sửa lại: Phải điền ngày đã chọn
+                newBookingDateInput.value = datePicker.value;
+            });
+
+            // 2. Xử lý nhấp chuột trên Lịch sân
+            scheduleGrid.addEventListener('click', (event) => {
+                
+                // 2.1. Tương tác: Nhấp vào một ô trống (nút "+")
+                const addBtn = event.target.closest('.add-booking-btn');
+                if (addBtn) {
+                    const cell = addBtn.closest('.grid-field-cell');
+                    const fieldName = cell.dataset.field;
+                    const timeSlot = cell.dataset.time;
+                    showPopup(createBookingPopupOverlay, fieldName, timeSlot);
+                }
+
+                // 2.2. Tương tác: Nhấp vào một thẻ "Đã đặt"
+                const bookingCard = event.target.closest('.booking-card');
+                if (bookingCard && !bookingCard.classList.contains('status-maintenance')) { // Không mở popup cho ô Bảo trì
+                    currentBookingCard = bookingCard; // Lưu thẻ này lại
+                    
+                    // Lấy thông tin từ thẻ (mô phỏng)
+                    // Trong ứng dụng thật, bạn sẽ dùng data-booking-id để fetch API
+                    const customerName = bookingCard.querySelector('.customer-name').textContent;
+                    const customerPhone = bookingCard.querySelector('.customer-phone').textContent;
+                    const statusText = bookingCard.querySelector('.status-tag').textContent;
+                    const cell = bookingCard.closest('.grid-field-cell');
+
+                    // Điền thông tin vào Popup "Chi tiết Đặt sân"
+                    detailCustomerName.textContent = customerName;
+                    detailCustomerPhone.textContent = customerPhone;
+                    detailCustomerEmail.textContent = 'khachhang@email.com'; // (Dữ liệu giả)
+                    detailBookingDate.textContent = displayFormattedDate(datePicker.value);
+                    detailBookingTime.textContent = `${cell.dataset.time}:00 - ${parseInt(cell.dataset.time) + 1}:00`;
+                    detailFieldName.textContent = cell.dataset.field;
+                    detailTotalPrice.textContent = '200.000 VNĐ'; // (Dữ liệu giả)
+                    detailNotes.textContent = (statusText === 'Đã cọc') ? 'Bù cọc 50k' : 'Khách quen'; // (Dữ liệu giả)
+
+                    // Cập nhật màu sắc và chữ cho Status Tag
+                    detailStatus.textContent = statusText;
+                    detailStatus.className = 'info-value status'; // Reset
+                    if (statusText.includes('Đã cọc')) detailStatus.classList.add('status-deposit');
+                    else if (statusText.includes('Chờ TT')) detailStatus.classList.add('status-pending');
+                    else if (statusText.includes('Đang đá')) detailStatus.classList.add('status-paid'); // Dùng màu xanh lá
+                    else detailStatus.classList.add('status-pending'); 
+
+                    // Cập nhật nút "Check-in"
+                    if (bookingCard.classList.contains('status-playing')) {
+                        checkinBtn.innerHTML = '<i class="fas fa-file-invoice"></i> Check-out';
+                        checkinBtn.classList.remove('btn-checkin');
+                        checkinBtn.classList.add('btn-secondary'); // Màu xám cho check-out
+                    } else {
+                        checkinBtn.innerHTML = '<i class="fas fa-check-circle"></i> Check-in';
+                        checkinBtn.classList.add('btn-checkin');
+                        checkinBtn.classList.remove('btn-secondary');
+                    }
+
+                    showPopup(bookingDetailPopupOverlay);
+                }
+            });
+
+            // 3. Đóng Popups (nút X và nút Huỷ)
+            closePopupButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    hidePopup(createBookingPopupOverlay);
+                    hidePopup(bookingDetailPopupOverlay);
+                });
+            });
+
+            // 4. Đóng Popups (khi nhấp ra ngoài)
+            createBookingPopupOverlay.addEventListener('click', (event) => {
+                if (event.target === createBookingPopupOverlay) {
+                    hidePopup(createBookingPopupOverlay);
+                }
+            });
+            bookingDetailPopupOverlay.addEventListener('click', (event) => {
+                if (event.target === bookingDetailPopupOverlay) {
+                    hidePopup(bookingDetailPopupOverlay);
+                }
+            });
+
+            // 5. Xử lý Form "Tạo Đặt Sân Mới"
+            createBookingForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                // Lấy dữ liệu (trong ứng dụng thật sẽ gửi đi)
+                const formData = new FormData(createBookingForm);
+                const newBookingData = Object.fromEntries(formData.entries());
+                
+                console.log('Tạo đơn đặt sân mới:', newBookingData);
+                // alert('Đơn đặt sân đã được tạo thành công!'); // Tạm thời không dùng alert
+                
+                // Mô phỏng: Thêm thẻ đặt sân vào lưới
+                // Tìm đúng ô
+                const fieldName = newBookingData.fieldName;
+                const timeSlot = newBookingData.bookingTime.split(':')[0]; // Lấy giờ bắt đầu (vd: "7")
+                
+                const cell = document.querySelector(`.grid-field-cell[data-field="${fieldName}"][data-time="${timeSlot}:00"]`);
+                if (cell) {
+                    cell.classList.remove('available');
+                    cell.innerHTML = `
+                        <div class="booking-card status-booked" data-booking-id="B_NEW_${Date.now()}">
+                            <span class="customer-name">${newBookingData.customerName}</span>
+                            <span class="customer-phone">${newBookingData.customerPhone}</span>
+                            <span class="status-tag">${newBookingData.status === 'deposit' ? 'Đã cọc' : 'Chờ TT'}</span>
+                        </div>
+                    `;
+                }
+                
+                hidePopup(createBookingPopupOverlay);
+            });
+
+            // 6. Xử lý nút "Check-in" / "Check-out"
+            checkinBtn.addEventListener('click', () => {
+                if (currentBookingCard) {
+                    if (currentBookingCard.classList.contains('status-playing')) {
+                        // Đang "Đang đá" -> Chuyển thành "Hoàn thành" (Check-out)
+                        // Trong thực tế, bạn có thể xóa thẻ hoặc đổi sang màu khác
+                        currentBookingCard.classList.remove('status-playing');
+                        currentBookingCard.classList.add('status-booked'); // Tạm đổi về màu cam
+                        currentBookingCard.querySelector('.status-tag').textContent = 'Hoàn thành';
+                        console.log('Đã Check-out sân!');
+                    } else {
+                        // Đang "Đã đặt" -> Chuyển thành "Đang đá" (Check-in)
+                        currentBookingCard.classList.remove('status-booked');
+                        currentBookingCard.classList.add('status-playing'); // Đổi sang màu xanh lá
+                        currentBookingCard.querySelector('.status-tag').textContent = 'Đang đá';
+                        console.log('Đã Check-in sân!');
+                    }
+                    hidePopup(bookingDetailPopupOverlay);
+                }
+            });
+
+            // 7. Xử lý nút "Huỷ sân"
+            cancelBookingBtn.addEventListener('click', () => {
+                // Tạm thời không dùng confirm
+                // const isConfirmed = confirm('Bạn có chắc chắn muốn huỷ lịch đặt sân này?');
+                
+                // if (isConfirmed && currentBookingCard) {
+                if (currentBookingCard) {
+                    console.log('Huỷ sân:', currentBookingCard.dataset.bookingId);
+                    const cell = currentBookingCard.closest('.grid-field-cell');
+                    // Xóa thẻ booking
+                    currentBookingCard.remove();
+                    // Thêm lại nút "+" cho ô trống
+                    cell.classList.add('available');
+                    cell.innerHTML = '<button class="add-booking-btn"><i class="fas fa-plus"></i></button>';
+                    
+                    hidePopup(bookingDetailPopupOverlay);
+                }
+            });
+
+            // 8. Xử lý khi đổi ngày (tưởng tượng là fetch API)
+            datePicker.addEventListener('change', (event) => {
+                console.log('Tải dữ liệu cho ngày:', event.target.value);
+                // Trong ứng dụng thật, bạn sẽ gọi API và render lại lưới ở đây
+                // renderBookings(event.target.value);
+                
+                // Mô phỏng: chỉ reset lại các ô mẫu
+                // (Phần này cần logic fetch API thật để hoạt động đúng)
+            });
+        });
+    </script>
+</body>
+</html>
