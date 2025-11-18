@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thịnh Vượng FC - Hệ Thống Sân Cỏ Nhân Tạo Đẳng Cấp</title>
+    
+    <!-- Font Roboto từ Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome cho Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =========================================
+           1. CẤU HÌNH CHUNG & BIẾN (VARIABLES)
+           ========================================= */
+        :root {
+            --primary-green: #1B5E20;  /* Xanh lá đậm sang trọng */
+            --primary-light: #2E7D32;  /* Xanh lá sáng hơn cho hover */
+            --accent-gold: #FFD700;    /* Vàng kim - Action color */
+            --accent-gold-hover: #FFC107;
+            --text-dark: #212121;      /* Màu chữ chính */
+            --text-gray: #555555;      /* Màu chữ phụ */
+            --white: #FFFFFF;
+            --bg-light: #f4f4f4;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        /* Container giúp căn giữa nội dung */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* =========================================
+           2. HEADER & NAVIGATION
+           ========================================= */
+        .main-header {
+            background-color: var(--primary-green);
+            height: 80px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo h1 {
+            color: var(--white);
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .main-menu {
+            display: flex;
+            gap: 30px;
+        }
+
+        .main-menu a {
+            color: var(--white);
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--transition);
+            padding: 10px 0;
+            position: relative;
+        }
+
+        .main-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background-color: var(--accent-gold);
+            transition: var(--transition);
+        }
+
+        .main-menu a:hover {
+            color: var(--accent-gold);
+        }
+
+        .main-menu a:hover::after {
+            width: 100%;
+        }
+
+        .auth-btn {
+            border: 2px solid var(--white);
+            color: var(--white);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .auth-btn:hover {
+            background-color: var(--white);
+            color: var(--primary-green);
+        }
+
+        /* Mobile Menu Button (Hidden on Desktop) */
+        .mobile-menu-btn {
+            display: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* =========================================
+           3. HERO BANNER
+           ========================================= */
+        .hero {
+            height: 85vh;
+            background-image: url('https://images.unsplash.com/photo-1529900748604-07564a03e7a6?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* Lớp phủ đen mờ */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            color: var(--white);
+            max-width: 800px;
+            padding: 0 20px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .btn-cta {
+            display: inline-block;
+            background-color: var(--accent-gold);
+            color: var(--text-dark);
+            font-size: 1.2rem;
+            font-weight: 900;
+            padding: 16px 40px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-cta:hover {
+            background-color: var(--accent-gold-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+        }
+
+        /* =========================================
+           4. FEATURED FIELDS (SÂN NỔI BẬT)
+           ========================================= */
+        .featured-section {
+            padding: 80px 0;
+            background-color: var(--white);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            color: var(--primary-green);
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent-gold);
+        }
+
+        .fields-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .field-card {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid #eee;
+        }
+
+        .field-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .card-image {
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .field-card:hover .card-image img {
+            transform: scale(1.1);
+        }
+
+        .card-content {
+            padding: 25px;
+        }
+
+        .card-content h3 {
+            font-size: 1.4rem;
+            color: var(--primary-green);
+            margin-bottom: 10px;
+        }
+
+        .card-content .desc {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            min-height: 45px; /* Giữ chiều cao đồng đều */
+        }
+
+        .card-content .price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #D32F2F; /* Màu đỏ cho giá để nổi bật */
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .btn-card {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 12px;
+            background-color: transparent;
+            border: 2px solid var(--primary-green);
+            color: var(--primary-green);
+            font-weight: 700;
+            border-radius: 5px;
+            transition: var(--transition);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .btn-card:hover {
+            background-color: var(--primary-green);
+            color: var(--white);
+        }
+
+        /* =========================================
+           5. FOOTER
+           ========================================= */
+        footer {
+            background-color: #1a1a1a;
+            color: var(--white);
+            padding: 60px 0 30px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .footer-logo h2 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .footer-slogan {
+            color: #aaa;
+            font-style: italic;
+        }
+
+        .contact-info li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .contact-info i {
+            color: var(--accent-gold);
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .social-icon:hover {
+            background-color: var(--accent-gold);
+            color: var(--text-dark);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        /* =========================================
+           6. RESPONSIVE DESIGN (MOBILE)
+           ========================================= */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .main-header {
+                height: 70px;
+            }
+
+            .logo h1 {
+                font-size: 1.4rem;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .main-menu {
+                display: none; /* Ẩn menu trên mobile (Trong thực tế sẽ dùng JS để toggle) */
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--primary-green);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                gap: 20px;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            }
+            
+            /* Class active để hiển thị menu khi click (giả lập) */
+            .main-menu.active {
+                display: flex;
+            }
+
+            .auth-btn {
+                display: none; /* Ẩn nút login trên mobile header để gọn, đưa vào menu */
+            }
+
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+            }
+
+            .btn-cta {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="main-header">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="#"><h1>THỊNH VƯỢNG FC</h1></a>
+            </div>
+
+            <nav>
+                <ul class="main-menu">
+                    <li><a href="#">Trang chủ</a></li>
+                    <li><a href="#">Tìm Sân</a></li>
+                    <li><a href="#">Xem Lịch Trống</a></li>
+                    <li><a href="#">Bảng giá</a></li>
+                    <li><a href="#">Liên hệ</a></li>
+                    <!-- Nút login cho mobile có thể chèn ở đây nếu cần -->
+                </ul>
+            </nav>
+
+            <div class="header-right">
+                <a href="#" class="auth-btn">Đăng nhập / Đăng ký</a>
+                <div class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO BANNER -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>HỆ THỐNG SÂN CỎ NHÂN TẠO<br>7 NGƯỜI CHUẨN QUỐC TẾ</h1>
+            <p>Mặt cỏ thế hệ mới - Hệ thống đèn LED chống lóa - Đặt sân Online nhanh chóng.</p>
+            <a href="booking.html" class="btn-cta">ĐẶT SÂN NGAY</a>
+        </div>
+    </section>
+
+    <!-- FEATURED FIELDS -->
+    <section class="featured-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Sân Bóng Nổi Bật</h2>
+            </div>
+
+            <div class="fields-grid">
+                <!-- Card 1 -->
+                <div class="field-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1575361204480-aadea25e6e68?q=80&w=2071" alt="Sân bóng đá 1">
+                    </div>
+                    <div class="card-content">
+                        <h3>Sân 1 (7 Người)</h3>
+                        <p class="desc">Khu A - Gần cổng chính, mặt cỏ mới 100%, không gian thoáng đãng.</p>
+                        <span class="price">Từ 300.000đ/trận</span>
+                        <a href="#" class="btn-card">Chi tiết</a>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="field-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1551958219-acbc608c6377?q=80&w=2070" alt="Sân bóng đá 2">
+                    </div>
+                    <div class="card-content">
+                        <h3>Sân 2 (7 Người)</h3>
+                        <p class="desc">Khu B - Hệ thống chiếu sáng cao cấp, phù hợp đá khung giờ tối.</p>
+                        <span class="price">Từ 300.000đ/trận</span>
+                        <a href="#" class="btn-card">Chi tiết</a>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="field-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1518091043644-c1d4457512c6?q=80&w=1931" alt="Sân bóng đá VIP">
+                    </div>
+                    <div class="card-content">
+                        <h3>Sân 3 (7 Người VIP)</h3>
+                        <p class="desc">Khu VIP - Không gian riêng biệt, yên tĩnh, có khu vực nghỉ ngơi riêng.</p>
+                        <span class="price">Từ 500.000đ/trận</span>
+                        <a href="#" class="btn-card">Chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Cột 1: Logo & Slogan -->
+                <div class="footer-col footer-logo">
+                    <h2>THỊNH VƯỢNG FC</h2>
+                    <p class="footer-slogan">Nơi đam mê tỏa sáng. Sân cỏ chất lượng, dịch vụ tận tâm.</p>
+                </div>
+
+                <!-- Cột 2: Liên hệ -->
+                <div class="footer-col">
+                    <h4>Thông tin liên hệ</h4>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i> Số 123 Đường Cầu Giấy, Q. Cầu Giấy, Hà Nội</li>
+                        <li><i class="fas fa-phone-alt"></i> Hotline: 0988 888 888</li>
+                        <li><i class="fas fa-envelope"></i> lienhe@thinhvuongfc.com</li>
+                    </ul>
+                </div>
+
+                <!-- Cột 3: Kết nối -->
+                <div class="footer-col">
+                    <h4>Kết nối với chúng tôi</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon" title="Zalo"><i class="fas fa-comment-dots"></i></a>
+                        <a href="#" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 Thịnh Vượng FC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script nhỏ để xử lý menu mobile (Optional) -->
+    <script>
+        const mobileBtn = document.querySelector('.mobile-menu-btn');
+        const mainMenu = document.querySelector('.main-menu');
+
+        if(mobileBtn) {
+            mobileBtn.addEventListener('click', () => {
+                mainMenu.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+</html>

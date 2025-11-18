@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Sân - Thịnh Vượng FC</title>
+    
+    <!-- Font Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =========================================
+           1. CẤU HÌNH CHUNG (COPY TỪ INDEX)
+           ========================================= */
+        :root {
+            --primary-green: #1B5E20;
+            --primary-light: #2E7D32;
+            --accent-gold: #FFD700;
+            --accent-gold-hover: #FFC107;
+            --text-dark: #212121;
+            --text-gray: #555555;
+            --white: #FFFFFF;
+            --bg-light: #f4f4f4;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --header-height: 80px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; color: var(--text-dark); background-color: var(--bg-light); line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* HEADER STYLES (COPY TỪ INDEX) */
+        .main-header { background-color: var(--primary-green); height: var(--header-height); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); display: flex; align-items: center; }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .logo h1 { color: var(--white); font-size: 1.8rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+        .main-menu { display: flex; gap: 30px; }
+        .main-menu a { color: var(--white); font-weight: 500; transition: var(--transition); padding: 10px 0; position: relative; }
+        .main-menu a:hover { color: var(--accent-gold); }
+        .auth-btn { border: 2px solid var(--white); color: var(--white); padding: 8px 20px; border-radius: 50px; font-weight: 700; transition: var(--transition); }
+        .auth-btn:hover { background-color: var(--white); color: var(--primary-green); }
+        .mobile-menu-btn { display: none; color: var(--white); font-size: 1.5rem; cursor: pointer; }
+
+        /* =========================================
+           2. LAYOUT CHÍNH (SIDEBAR + GRID)
+           ========================================= */
+        .booking-section {
+            padding: 40px 0 80px;
+        }
+
+        .booking-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr; /* 25% - 75% layout */
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* =========================================
+           3. SIDEBAR BỘ LỌC (STICKY)
+           ========================================= */
+        .filter-sidebar {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: calc(var(--header-height) + 20px); /* Dính cách header 20px */
+            border: 1px solid #eee;
+        }
+
+        .filter-sidebar h3 {
+            color: var(--primary-green);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 45px;
+            padding: 0 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.1);
+        }
+
+        .btn-search {
+            width: 100%;
+            height: 45px;
+            background-color: var(--primary-green);
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-search:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        /* =========================================
+           4. DANH SÁCH SÂN (GRID)
+           ========================================= */
+        .results-header {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-header h2 {
+            font-size: 1.8rem;
+            color: var(--text-dark);
+        }
+
+        .results-count {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+
+        .fields-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive Grid */
+            gap: 30px;
+        }
+
+        /* FIELD CARD STYLES */
+        .field-card {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .card-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .field-card:hover .card-image img {
+            transform: scale(1.1);
+        }
+
+        /* Label loại sân trên ảnh */
+        .card-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(0,0,0,0.7);
+            color: var(--white);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .card-body {
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .card-body h3 {
+            font-size: 1.3rem;
+            color: var(--primary-green);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .card-body .desc {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .price-tag {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .price-tag .unit {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-gray);
+        }
+
+        .card-footer {
+            padding: 15px 20px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #eee;
+        }
+
+        /* Button Styles */
+        .btn-book {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-gold);
+            color: var(--text-dark);
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+        }
+
+        .btn-book:hover {
+            background-color: var(--accent-gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-disabled {
+            width: 100%;
+            padding: 12px;
+            background-color: #e0e0e0;
+            color: #999;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: not-allowed;
+            text-transform: uppercase;
+        }
+
+        /* =========================================
+           5. FOOTER (COPY TỪ INDEX)
+           ========================================= */
+        footer { background-color: #1a1a1a; color: var(--white); padding: 60px 0 30px; margin-top: auto; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; }
+        .footer-col h4 { color: var(--accent-gold); font-size: 1.2rem; margin-bottom: 20px; text-transform: uppercase; }
+        .footer-logo h2 { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; }
+        .contact-info li { margin-bottom: 15px; display: flex; align-items: flex-start; }
+        .contact-info i { color: var(--accent-gold); margin-right: 10px; margin-top: 5px; }
+        .social-links { display: flex; gap: 15px; }
+        .social-icon { width: 40px; height: 40px; background-color: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+        .social-icon:hover { background-color: var(--accent-gold); color: var(--text-dark); }
+        .copyright { text-align: center; padding-top: 30px; border-top: 1px solid #333; color: #777; font-size: 0.9rem; }
+
+        /* =========================================
+           6. RESPONSIVE
+           ========================================= */
+        @media (max-width: 992px) {
+            .booking-layout {
+                grid-template-columns: 1fr; /* Stack thành 1 cột */
+            }
+
+            .filter-sidebar {
+                position: static; /* Hết sticky trên mobile để tránh chiếm chỗ */
+                margin-bottom: 30px;
+            }
+
+            .fields-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-header { height: 70px; }
+            .auth-btn { display: none; }
+            .mobile-menu-btn { display: block; }
+            .main-menu { display: none; }
+            
+            /* Logic Mobile Menu (Ẩn/Hiện) */
+            .main-menu.active { display: flex; position: absolute; top: 70px; left: 0; width: 100%; background: var(--primary-green); flex-direction: column; padding: 20px; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER (Consistent with Index) -->
+    <header class="main-header">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html"><h1>THỊNH VƯỢNG FC</h1></a>
+            </div>
+            <nav>
+                <ul class="main-menu">
+                    <li><a href="index.html">Trang chủ</a></li>
+                    <li><a href="booking.html" style="color: var(--accent-gold);">Tìm Sân</a></li>
+                    <li><a href="#">Xem Lịch Trống</a></li>
+                    <li><a href="#">Bảng giá</a></li>
+                    <li><a href="#">Liên hệ</a></li>
+                </ul>
+            </nav>
+            <div class="header-right">
+                <a href="login.html" class="auth-btn">Đăng nhập</a>
+                <div class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT: BOOKING LAYOUT -->
+    <section class="booking-section">
+        <div class="container">
+            <div class="booking-layout">
+                
+                <!-- SIDEBAR BỘ LỌC -->
+                <aside class="filter-sidebar">
+                    <h3><i class="fas fa-filter"></i> Tìm Sân Trống</h3>
+                    <form action="#">
+                        <div class="filter-group">
+                            <label for="booking-date">Ngày đá:</label>
+                            <input type="date" id="booking-date" class="form-control">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="time-slot">Khung giờ:</label>
+                            <select id="time-slot" class="form-control">
+                                <option value="all">Tất cả khung giờ</option>
+                                <option value="17:00">17:00 - 18:30</option>
+                                <option value="18:30">18:30 - 20:00</option>
+                                <option value="20:00">20:00 - 21:30</option>
+                            </select>
+                        </div>
+
+                        <button type="button" class="btn-search">
+                            <i class="fas fa-search"></i> Tìm Kiếm
+                        </button>
+                    </form>
+                </aside>
+
+                <!-- NỘI DUNG DANH SÁCH SÂN -->
+                <main class="results-container">
+                    <div class="results-header">
+                        <h2>Kết quả tìm kiếm</h2>
+                        <span class="results-count">Hiển thị 3 sân phù hợp</span>
+                    </div>
+
+                    <div class="fields-grid">
+                        
+                        <!-- Sân 1: Trạng thái TRỐNG (Available) -->
+                        <div class="field-card">
+                            <div class="card-image">
+                                <img src="https://images.unsplash.com/photo-1529900748604-07564a03e7a6?q=80&w=2070" alt="Sân 1">
+                                <span class="card-badge">Sân 7 người</span>
+                            </div>
+                            <div class="card-body">
+                                <h3>Sân 1 (Tiêu chuẩn)</h3>
+                                <p class="desc"><i class="fas fa-map-marker-alt"></i> Khu A - Cỏ nhân tạo mới 100%</p>
+                                <div class="price-tag">300.000đ <span class="unit">/ 90p</span></div>
+                            </div>
+                            <div class="card-footer">
+                                <!-- Nút này sẽ trigger Popup ở bước sau -->
+                                <button class="btn-book" onclick="alert('Popup xác nhận đặt sân sẽ hiện ở đây!')">
+                                    Đặt Ngay
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Sân 2: Trạng thái ĐÃ CÓ KHÁCH (Booked) -->
+                        <div class="field-card">
+                            <div class="card-image">
+                                <img src="https://images.unsplash.com/photo-1551958219-acbc608c6377?q=80&w=2070" alt="Sân 2">
+                                <span class="card-badge">Sân 7 người</span>
+                            </div>
+                            <div class="card-body">
+                                <h3>Sân 2 (Gần Căn-tin)</h3>
+                                <p class="desc"><i class="fas fa-map-marker-alt"></i> Khu B - Hệ thống đèn LED VIP</p>
+                                <div class="price-tag">300.000đ <span class="unit">/ 90p</span></div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn-disabled" disabled>
+                                    Đã Có Khách
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Sân 3: Trạng thái TRỐNG (VIP) -->
+                        <div class="field-card">
+                            <div class="card-image">
+                                <img src="https://images.unsplash.com/photo-1518091043644-c1d4457512c6?q=80&w=1931" alt="Sân 3">
+                                <span class="card-badge" style="background: #FFD700; color: #000;">VIP</span>
+                            </div>
+                            <div class="card-body">
+                                <h3>Sân 3 (VIP)</h3>
+                                <p class="desc"><i class="fas fa-map-marker-alt"></i> Khu C - Yên tĩnh, riêng biệt</p>
+                                <div class="price-tag">500.000đ <span class="unit">/ 90p</span></div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn-book" onclick="alert('Popup xác nhận đặt sân sẽ hiện ở đây!')">
+                                    Đặt Ngay
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col footer-logo">
+                    <h2>THỊNH VƯỢNG FC</h2>
+                    <p style="color: #aaa; font-style: italic;">Nơi đam mê tỏa sáng.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Liên hệ</h4>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i> Cầu Giấy, Hà Nội</li>
+                        <li><i class="fas fa-phone-alt"></i> 0988 888 888</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Kết nối</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fas fa-comment-dots"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Thịnh Vượng FC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script Set ngày mặc định là hôm nay -->
+    <script>
+        // Set input date value to Today
+        document.getElementById('booking-date').valueAsDate = new Date();
+
+        // Mobile Menu Toggle
+        const mobileBtn = document.querySelector('.mobile-menu-btn');
+        const mainMenu = document.querySelector('.main-menu');
+        if(mobileBtn) {
+            mobileBtn.addEventListener('click', () => {
+                mainMenu.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+</html>

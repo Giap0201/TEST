@@ -19,9 +19,9 @@
             --danger-color: #dc3545;
             --warning-color: #ffc107;
             --info-color: #17a2b8;
-            --vip-color: #b71c1c; /* Màu VIP (Đỏ sậm) */
-            --gold-color: #ffab00; /* Màu Vàng */
-            --silver-color: #B0BEC5; /* Màu Bạc */
+            --vip-color: #b71c1c; 
+            --gold-color: #ffab00; 
+            --silver-color: #B0BEC5; 
             
             --bg-body: #F4F7FC;
             --bg-sidebar: #2C3E50;
@@ -44,6 +44,7 @@
             background-color: var(--bg-body);
             color: var(--text-dark);
             line-height: 1.6;
+            /* overflow: hidden;  XÓA BỎ ĐỂ TRANG CUỘN BÌNH THƯỜNG */
         }
 
         a {
@@ -79,7 +80,7 @@
             justify-content: center;
             gap: 10px;
             margin-bottom: 30px;
-            font-size: 1.5rem; /* Điều chỉnh kích thước logo */
+            font-size: 1.5rem; 
             font-weight: 700;
             color: #fff;
             width: 100%;
@@ -96,7 +97,7 @@
         .sidebar-nav {
             width: 100%;
             flex-grow: 1;
-            padding: 0 20px; /* Thêm padding cho các mục nav */
+            padding: 0 20px; 
         }
 
         .sidebar-nav li {
@@ -107,20 +108,24 @@
         .sidebar-nav li a {
             display: flex;
             align-items: center;
-            gap: 15px; /* Tăng khoảng cách */
-            padding: 14px 20px; /* Điều chỉnh padding */
+            gap: 15px; 
+            padding: 14px 20px; 
             color: var(--text-light);
             opacity: 0.8;
             transition: all 0.3s ease;
-            font-size: 1rem; /* Kích thước chữ to hơn */
+            font-size: 1rem; 
             font-weight: 500;
             border-radius: 8px;
         }
 
         .sidebar-nav li a i {
-            font-size: 1.2rem; /* Đồng bộ kích thước icon */
-            width: 20px; /* Căn chỉnh icon */
+            font-size: 1.2rem; 
+            width: 20px; 
             text-align: center;
+        }
+        
+        .sidebar-nav li a span {
+            display: block; /* Hiển thị chữ */
         }
 
         .sidebar-nav li a:hover,
@@ -137,6 +142,8 @@
             background-color: var(--bg-body);
             margin-left: 240px; /* Offset cho sidebar đã nới rộng */
             transition: margin-left 0.3s ease;
+            height: 100vh; /* Thêm để nội dung chính cuộn */
+            overflow-y: auto;
         }
 
         .top-header {
@@ -160,22 +167,22 @@
 
         /* === NÚT CHUNG (Đã tái cấu trúc) === */
         .btn {
-            padding: 12px 20px; /* Tăng padding */
+            padding: 12px 20px; 
             border: none;
             border-radius: 8px;
-            font-size: 0.95rem; /* Kích thước chữ */
-            font-weight: 600; /* Đậm hơn */
+            font-size: 0.95rem; 
+            font-weight: 600; 
             transition: all 0.3s ease;
             cursor: pointer;
             text-decoration: none;
-            display: inline-flex; /* Dùng flex để căn icon */
+            display: inline-flex; 
             align-items: center;
             justify-content: center;
-            gap: 8px; /* Khoảng cách icon và chữ */
+            gap: 8px; 
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .btn:hover {
-            transform: translateY(-2px); /* Hiệu ứng nhấc lên */
+            transform: translateY(-2px); 
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
         .btn:active {
@@ -267,86 +274,29 @@
         /* === GENERAL CARD STYLING === */
         .card {
             background-color: var(--bg-card);
-            border-radius: 16px; /* Bo tròn nhiều hơn */
-            padding: 25px 30px; /* Tăng padding */
+            border-radius: 16px; 
+            padding: 25px 30px; 
             box-shadow: var(--box-shadow-light);
             margin-bottom: 25px;
             border: 1px solid var(--border-light);
         }
         
-        /* === PAGE TOOLBAR (Chung) === */
-
-        .page-toolbar {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-            align-items: center;
-        }
-
-        .search-bar {
-            flex-grow: 1; /* Cho thanh tìm kiếm chiếm nhiều không gian */
-            position: relative;
-        }
-
-        .search-bar input,
-        .page-toolbar input[type="date"] {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border-light);
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.3s ease;
-        }
-        .search-bar input {
-            padding-left: 45px; /* Padding cho icon */
-        }
-        
-        .page-toolbar label {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            white-space: nowrap; /* Không xuống dòng */
-        }
-
-        .search-bar input:focus,
-        .page-toolbar input[type="date"]:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
-        }
-        .search-bar i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-        
-        /* Cụm nút bên phải toolbar */
-        .toolbar-actions {
-            display: flex;
-            gap: 15px;
-            margin-left: auto; /* Đẩy các nút sang phải */
-        }
+        /* === PAGE TOOLBAR (Dùng cho Quản lý Nhân viên) === */
+        /* (Không dùng ở trang này) */
         
         /* === TABLE STYLING (Chung) === */
         .table-container {
             overflow-x: auto;
         }
-
         .table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
             font-size: 0.95rem;
         }
-
         .table thead tr {
             background-color: #f8f9fa;
         }
-
         .table th {
             padding: 16px 15px;
             font-weight: 600;
@@ -355,24 +305,22 @@
             font-size: 0.8rem;
             letter-spacing: 0.5px;
         }
-
         .table tbody tr {
             border-bottom: 1px solid var(--border-light);
-            transition: background-color 0.2s ease;
-        }
-        .table tbody tr:last-child {
-            border-bottom: none;
         }
         .table tbody tr:hover {
             background-color: #fcfdff;
         }
-
         .table td {
             padding: 16px 15px;
             vertical-align: middle;
             color: var(--text-dark);
         }
-        
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+
         /* Tên khách hàng/nhân viên */
         .table td .customer-name {
             font-weight: 600;
@@ -382,19 +330,11 @@
             font-size: 0.9rem;
         }
         
-        .table td .invoice-id {
-            font-weight: 600;
-            color: var(--primary-color);
-            font-family: monospace;
-            font-size: 1.05rem;
+        .table td strong {
+            color: var(--text-dark);
         }
 
-        .table-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        /* === BADGE STYLING (Chung) === */
+        /* === BADGE STYLING (NÂNG CẤP) === */
         .badge {
             padding: 5px 12px;
             border-radius: 20px; /* Hình con nhộng */
@@ -424,35 +364,12 @@
              color: var(--primary-color);
              border-color: var(--primary-color);
         }
-        /* Badge cho Nhân viên (MỚI) */
         .badge-secondary {
             background-color: #f0f3f5;
             color: var(--secondary-color);
             border-color: #cfd8dc;
         }
         
-        /* Hạng thành viên */
-        .badge-vip {
-            background-color: #fde8e8;
-            color: var(--vip-color);
-            border-color: var(--vip-color);
-        }
-        .badge-gold {
-            background-color: #fff8e1;
-            color: var(--gold-color);
-            border-color: var(--gold-color);
-        }
-        .badge-silver {
-            background-color: #eceff1;
-            color: var(--silver-color);
-            border-color: var(--silver-color);
-        }
-        /* Badge cho PTTT */
-        .badge-method {
-            background-color: #f0f3f5;
-            color: var(--secondary-color);
-            border-color: #cfd8dc;
-        }
 
         /* === MODAL STYLING (CHUNG) === */
 
@@ -550,7 +467,7 @@
         .form-group input[type="time"],
         .form-group input[type="number"],
         .form-group input[type="email"],
-        .form-group input[type="password"], /* Thêm password */
+        .form-group input[type="password"],
         .form-group select,
         .form-group textarea {
             width: 100%;
@@ -583,13 +500,6 @@
             gap: 20px;
         }
         
-        /* Ghi chú nhỏ cho form */
-        .form-group .form-note {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 5px;
-        }
-
         .modal-footer {
             display: flex;
             justify-content: flex-end;
@@ -617,9 +527,17 @@
             color: var(--primary-color);
             margin-bottom: 15px;
         }
-
-        /* === PROMPT 18: KIỂU DÁNG LỊCH LÀM VIỆC (MỚI) === */
         
+        
+        /* === PROMPT 19: KIỂU DÁNG LỊCH PHÂN CA (MỚI) === */
+        .page-toolbar .toolbar-group {
+            display: flex;
+            gap: 10px;
+        }
+        .page-toolbar .btn-primary {
+            margin-left: auto; /* Đẩy nút Gán ca sang phải */
+        }
+
         .table.schedule-table th {
             text-align: center;
             padding: 16px 8px;
@@ -637,6 +555,7 @@
             vertical-align: top;
             height: 110px; /* Chiều cao tối thiểu cho ô */
             width: 12%;
+            border: 1px solid var(--border-light); /* Thêm viền cho các ô */
         }
         .table.schedule-table td:first-child {
             /* Tên nhân viên */
@@ -644,6 +563,8 @@
             vertical-align: middle;
             padding-left: 15px;
             width: 16%;
+            border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
         }
 
         .shift-block {
@@ -673,13 +594,8 @@
             color: var(--text-muted);
         }
 
-        /* === KIỂU DÁNG CỤ THỂ CHO CÁC MODAL === */
 
-        /* Kích thước */
-        #employee-info-modal .modal-content {
-            width: 700px;
-        }
-
+        
         /* === HIỂN THỊ MODAL (CHỈ 1 MODAL ĐƯỢC BẬT) === */
         
         /* Mặc định ẩn tất cả */
@@ -687,8 +603,8 @@
             display: none;
         }
         
-        /* === PROMPT 18 (HIỆN TẠI): KHÔNG CÓ MODAL NÀO BẬT === */
-        /* (Không có quy tắc hiển thị tĩnh) */
+        /* === PROMPT 18 (ĐÃ XÓA): KHÔNG CÓ MODAL NÀO BẬT === */
+        /* (Đã xóa quy tắc hiển thị tĩnh của #shift-info-modal) */
 
 
         /* === RESPONSIVE (ĐƠN GIẢN) === */
@@ -703,9 +619,16 @@
                 justify-content: center;
             }
             .sidebar-nav li a {
+                flex-direction: column; /* Quay lại icon-only */
                 justify-content: center;
                 padding: 15px 0;
+                font-size: 0.8em;
             }
+             .sidebar-nav li a i {
+                font-size: 1.3em;
+                margin-bottom: 5px;
+             }
+             
             .main-content {
                 margin-left: 80px; /* Điều chỉnh margin */
             }
@@ -725,36 +648,23 @@
                 align-items: flex-start;
                 gap: 15px;
             }
-            .top-header h1 {
-                font-size: 1.5rem;
-            }
             .user-info {
                 width: 100%;
                 justify-content: flex-end;
             }
-            .page-toolbar {
-                flex-direction: column;
-                align-items: stretch; /* Kéo dài các phần tử */
-            }
-            .toolbar-actions {
-                margin-left: 0;
+            
+            .page-toolbar.filter-card {
                 flex-direction: column;
                 align-items: stretch;
             }
+            .page-toolbar .toolbar-actions {
+                margin-left: 0;
+                flex-direction: column;
+            }
+            .search-bar {
+                min-width: 0;
+            }
             
-            .modal-content {
-                width: 95%;
-                max-width: 95%;
-            }
-            .modal-body {
-                padding: 20px;
-            }
-            .modal-header, .modal-footer {
-                padding: 15px 20px;
-            }
-            .modal-header h3 {
-                font-size: 1.2rem;
-            }
             .form-row {
                 grid-template-columns: 1fr;
             }
@@ -763,7 +673,7 @@
 </head>
 <body>
 
-    <!-- === SIDEBAR === -->
+    <!-- === SIDEBAR (ĐÃ NÂNG CẤP) === -->
     <aside class="sidebar">
         <div class="logo">
             <i class="fas fa-futbol"></i> <span>Thịnh Vượng</span>
@@ -782,10 +692,11 @@
     <!-- === MAIN CONTENT === -->
     <main class="main-content">
         
-        <!-- === TOP HEADER === -->
+        <!-- === TOP HEADER (ĐÃ NÂNG CẤP) === -->
         <header class="top-header">
-            <h1>Phân công Lịch làm việc</h1>
+            <h1>Phân công Lịch làm việc</h1> <!-- THAY ĐỔI: Tiêu đề mới -->
             <div class="user-info">
+                <!-- Nút đã chuyển xuống thanh công cụ -->
                 <div class="user-profile">
                     <div class="avatar">CS</div>
                     <div>
@@ -796,63 +707,63 @@
             </div>
         </header>
 
-        <!-- === PROMPT 18: NỘI DUNG TRANG LỊCH LÀM VIỆC === -->
+        <!-- === PROMPT 19: NỘI DUNG TRANG QUẢN LÝ LỊCH LÀM VIỆC (PHÂN CA) === -->
         
-        <!-- Thanh công cụ -->
-        <div class="page-toolbar">
-            <!-- Cụm nút trái (hoặc giữa) -->
-            <div>
+        <!-- Thanh công cụ (Toolbar) -->
+        <div class="card page-toolbar filter-card">
+            <div class="toolbar-group">
                 <button class="btn btn-secondary"><i class="fas fa-chevron-left"></i> Tuần trước</button>
                 <button class="btn btn-secondary">Tuần này</button>
                 <button class="btn btn-secondary">Tuần sau <i class="fas fa-chevron-right"></i></button>
             </div>
-            <!-- Cụm nút phải -->
-            <div class="toolbar-actions">
-                <button class="btn btn-primary"><i class="fas fa-plus"></i> Gán ca làm việc</button>
-            </div>
+            <button class="btn btn-primary"><i class="fas fa-plus"></i> Gán ca</button>
         </div>
 
-        <!-- Bảng Lịch làm việc -->
+        <!-- Bảng Lịch làm việc (Dạng Lịch Tuần) -->
         <div class="card">
             <div class="table-container">
                 <table class="table schedule-table">
                     <thead>
                         <tr>
                             <th>Nhân viên</th>
-                            <th>Thứ 2, 17/11</th>
-                            <th>Thứ 3, 18/11</th>
-                            <th>Thứ 4, 19/11</th>
-                            <th>Thứ 5, 20/11</th>
-                            <th>Thứ 6, 21/11</th>
-                            <th>Thứ 7, 22/11</th>
-                            <th>Chủ nhật, 23/11</th>
+                            <th>Thứ 2 (17/11)</th>
+                            <th>Thứ 3 (18/11)</th>
+                            <th>Thứ 4 (19/11)</th>
+                            <th>Thứ 5 (20/11)</th>
+                            <th>Thứ 6 (21/11)</th>
+                            <th>Thứ 7 (22/11)</th>
+                            <th>Chủ Nhật (23/11)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>
-                                <div class="customer-name">Nguyễn Văn An</div>
-                                <div class="customer-phone">0987654321</div>
-                            </td>
-                            <td><div class="shift-block shift-sang">Ca Sáng<br>(8:00 - 16:00)</div></td>
-                            <td><div class="shift-block shift-sang">Ca Sáng<br>(8:00 - 16:00)</div></td>
-                            <td><div class="shift-block shift-sang">Ca Sáng<br>(8:00 - 16:00)</div></td>
+                            <td><strong>Phạm Văn Nam</strong></td>
+                            <td><div class="shift-block shift-sang">Ca Sáng (8:00 - 16:00)</div></td>
+                            <td><div class="shift-block shift-sang">Ca Sáng (8:00 - 16:00)</div></td>
+                            <td><div class="shift-block shift-sang">Ca Sáng (8:00 - 16:00)</div></td>
                             <td><div class="shift-block shift-nghi">Nghỉ</div></td>
-                            <td><div class="shift-block shift-toi">Ca Tối<br>(16:00 - 24:00)</div></td>
-                            <td><div class="shift-block shift-toi">Ca Tối<br>(16:00 - 24:00)</div></td>
-                            <td><div class="shift-block shift-toi">Ca Tối<br>(16:00 - 24:00)</div></td>
+                            <td><div class="shift-block shift-nghi">Nghỉ</div></td>
+                            <td><div class="shift-block shift-toi">Ca Tối (16:00 - 24:00)</div></td>
+                            <td><div class="shift-block shift-toi">Ca Tối (16:00 - 24:00)</div></td>
                         </tr>
                         <tr>
-                            <td>
-                                <div class="customer-name">Trần Thị Bích</div>
-                                <div class="customer-phone">0905111222</div>
-                            </td>
-                            <td><div class="shift-block shift-toi">Ca Tối<br>(16:00 - 24:00)</div></td>
-                            <td><div class="shift-block shift-toi">Ca Tối<br>(16:00 - 24:00)</div></td>
-                            <td><div class="shift-block shift-toi">Ca Tối<br>(16:00 - 24:00)</div></td>
-                            <td><div class="shift-block shift-toi">Ca Tối<br>(16:00 - 24:00)</div></td>
-                            <td><div class="shift-block shift-sang">Ca Sáng<br>(8:00 - 16:00)</div></td>
-                            <td><div class="shift-block shift-sang">Ca Sáng<br>(8:00 - 16:00)</div></td>
+                            <td><strong>Trần Thị Bích</strong></td>
+                            <td><div class="shift-block shift-toi">Ca Tối (16:00 - 24:00)</div></td>
+                            <td><div class="shift-block shift-toi">Ca Tối (16:00 - 24:00)</div></td>
+                            <td><div class="shift-block shift-toi">Ca Tối (16:00 - 24:00)</div></td>
+                            <td><div class="shift-block shift-sang">Ca Sáng (8:00 - 16:00)</div></td>
+                            <td><div class="shift-block shift-sang">Ca Sáng (8:00 - 16:00)</div></td>
+                            <td><div class="shift-block shift-nghi">Nghỉ</div></td>
+                            <td><div class="shift-block shift-nghi">Nghỉ</div></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Lê Văn Luyện</strong></td>
+                            <td><div class="shift-block shift-nghi">Nghỉ</div></td>
+                            <td><div class="shift-block shift-sang">Ca Sáng (8:00 - 16:00)</div></td>
+                            <td><div class="shift-block shift-toi">Ca Tối (16:00 - 24:00)</div></td>
+                            <td><div class="shift-block shift-sang">Ca Sáng (8:00 - 16:00)</div></td>
+                            <td><div class="shift-block shift-toi">Ca Tối (16:00 - 24:00)</div></td>
+                            <td><div class="shift-block shift-sang">Ca Sáng (8:00 - 16:00)</div></td>
                             <td><div class="shift-block shift-nghi">Nghỉ</div></td>
                         </tr>
                     </tbody>

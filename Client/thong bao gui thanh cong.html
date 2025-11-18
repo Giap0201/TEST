@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đã Gửi Hướng Dẫn - Thịnh Vượng FC</title>
+    
+    <!-- Font Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome cho Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-green: #1B5E20;
+            --primary-light: #2E7D32;
+            --accent-gold: #FFD700;
+            --accent-gold-hover: #FFC107;
+            --text-dark: #212121;
+            --text-gray: #757575;
+            --white: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* =============================
+           A. PHẦN TRÁI (BANNER - 55%)
+           ============================= */
+        .split-banner {
+            flex: 0 0 55%;
+            /* Giữ nguyên ảnh của trang Quên Mật Khẩu để tạo tính liên tục */
+            background-image: 
+                linear-gradient(
+                    rgba(27, 94, 32, 0.85), 
+                    rgba(27, 94, 32, 0.85)
+                ),
+                url('https://images.unsplash.com/photo-1551958219-acbc608c6377?q=80&w=2070');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .banner-content h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .banner-content p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        /* =============================
+           B. PHẦN PHẢI (NỘI DUNG - 45%)
+           ============================= */
+        .confirmation-container {
+            flex: 1;
+            background-color: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; /* Căn giữa toàn bộ nội dung */
+            padding: 40px 60px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Icon Thành Công */
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background-color: #e8f5e9; /* Màu nền xanh rất nhạt */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            animation: popup 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .success-icon i {
+            font-size: 50px;
+            color: var(--primary-green);
+        }
+
+        @keyframes popup {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Tiêu đề */
+        .confirmation-content h2 {
+            color: var(--primary-green);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* Nội dung chi tiết */
+        .message-box {
+            color: var(--text-dark);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            max-width: 400px; /* Giới hạn chiều rộng để dễ đọc */
+        }
+
+        .user-email {
+            display: block;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary-green);
+            margin: 10px 0;
+            word-break: break-all; /* Xuống dòng nếu email quá dài */
+        }
+
+        .sub-text {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            margin-top: 10px;
+        }
+
+        /* Nút Quay lại Đăng nhập - Màu Vàng (Primary Action) */
+        .btn-primary {
+            width: 100%;
+            max-width: 350px;
+            height: 50px;
+            background-color: var(--accent-gold);
+            color: var(--text-dark);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Link gửi lại */
+        .resend-link {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+
+        .resend-link a {
+            color: var(--primary-green);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .resend-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Mobile */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                overflow-y: auto;
+            }
+
+            .split-banner {
+                flex: 0 0 200px;
+                padding: 20px;
+            }
+
+            .banner-content h1 {
+                font-size: 1.8rem;
+            }
+
+            .confirmation-container {
+                flex: 1;
+                padding: 40px 20px;
+                border-top-left-radius: 20px;
+                border-top-right-radius: 20px;
+                margin-top: -20px;
+            }
+
+            .success-icon {
+                width: 80px;
+                height: 80px;
+            }
+
+            .success-icon i {
+                font-size: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- A. PHẦN TRÁI: BANNER -->
+    <div class="split-banner">
+        <div class="banner-content">
+            <h1>THỊNH VƯỢNG FC</h1>
+            <p>Kiểm tra hộp thư của bạn</p>
+        </div>
+    </div>
+
+    <!-- B. PHẦN PHẢI: NỘI DUNG THÔNG BÁO -->
+    <div class="confirmation-container">
+        
+        <!-- Icon Email mở ra -->
+        <div class="success-icon">
+            <i class="fas fa-envelope-open-text"></i>
+        </div>
+
+        <div class="confirmation-content">
+            <h2>Đã gửi hướng dẫn!</h2>
+            
+            <div class="message-box">
+                <p>Chúng tôi đã gửi một liên kết đặt lại mật khẩu đến email:</p>
+                <span class="user-email">nguyenvana@example.com</span>
+                <p class="sub-text">Vui lòng kiểm tra hộp thư đến (hoặc mục Spam) và làm theo hướng dẫn trong email.</p>
+            </div>
+
+            <!-- Nút hành động chính -->
+            <button class="btn-primary" onclick="window.location.href='login.html'">
+                Quay lại Đăng nhập
+            </button>
+
+            <div class="resend-link">
+                Không nhận được email? <a href="#">Gửi lại</a>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

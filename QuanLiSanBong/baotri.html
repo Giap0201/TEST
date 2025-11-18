@@ -44,6 +44,7 @@
             background-color: var(--bg-body);
             color: var(--text-dark);
             line-height: 1.6;
+            overflow: hidden; /* THÊM LẠI: Ngăn cuộn body khi modal mở */
         }
 
         a {
@@ -141,6 +142,8 @@
             background-color: var(--bg-body);
             margin-left: 240px; /* Offset cho sidebar đã nới rộng */
             transition: margin-left 0.3s ease;
+            height: 100vh; /* Thêm để nội dung chính cuộn */
+            overflow-y: auto;
         }
 
         .top-header {
@@ -278,25 +281,64 @@
             border: 1px solid var(--border-light);
         }
         
-        /* === PAGE TOOLBAR (Chung) === */
-        /* (Không dùng ở trang này) */
+        /* === PAGE TOOLBAR / FILTER CARD (Dùng cho Quản lý Sân bóng) === */
+        .page-toolbar.filter-card {
+            display: flex;
+            flex-wrap: wrap; /* Cho phép xuống dòng trên di động */
+            gap: 20px;
+            align-items: center;
+            padding: 20px 25px;
+        }
+        .page-toolbar .form-group {
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .page-toolbar .form-group label {
+            margin-bottom: 0;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .page-toolbar .form-group input,
+        .page-toolbar .form-group select {
+            padding: 10px 12px;
+            font-size: 0.95rem;
+            width: auto; /* Tự động co dãn */
+            min-width: 180px;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .page-toolbar .form-group input:focus {
+             outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+        }
+
+        .page-toolbar .toolbar-actions {
+            margin-left: auto; /* Đẩy các nút sang phải */
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap; /* Cho phép nút xuống dòng nếu không đủ chỗ */
+        }
+        
         
         /* === TABLE STYLING (Chung) === */
         .table-container {
             overflow-x: auto;
         }
-
         .table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
             font-size: 0.95rem;
         }
-
         .table thead tr {
             background-color: #f8f9fa;
         }
-
         .table th {
             padding: 16px 15px;
             font-weight: 600;
@@ -305,39 +347,27 @@
             font-size: 0.8rem;
             letter-spacing: 0.5px;
         }
-
         .table tbody tr {
             border-bottom: 1px solid var(--border-light);
-            transition: background-color 0.2s ease;
-        }
-        .table tbody tr:last-child {
-            border-bottom: none;
         }
         .table tbody tr:hover {
             background-color: #fcfdff;
         }
-
         .table td {
             padding: 16px 15px;
             vertical-align: middle;
             color: var(--text-dark);
         }
-        
-        .table td strong {
-            color: var(--text-dark);
-        }
-        
-        .table td .customer-name {
-            font-weight: 600;
-        }
-        .table td .customer-phone {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-        
         .table-actions {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap; /* SỬA LỖI: Cho phép nút xuống dòng */
+        }
+        
+        .table td strong {
+            color: var(--text-dark);
+            font-family: monospace;
+            font-size: 1.05rem;
         }
 
         /* === BADGE STYLING (NÂNG CẤP) === */
@@ -369,6 +399,12 @@
              background-color: #e7f2ff;
              color: var(--primary-color);
              border-color: var(--primary-color);
+        }
+        /* MỚI: Badge Info */
+        .badge-info {
+             background-color: #e7f8fa;
+             color: var(--info-color);
+             border-color: var(--info-color);
         }
 
         /* === MODAL STYLING (CHUNG) === */
@@ -430,6 +466,13 @@
             font-weight: 600;
             color: var(--text-dark);
         }
+        
+        .modal-header .header-note {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
 
         .modal-close {
             font-size: 2.2rem;
@@ -480,6 +523,12 @@
             background-color: #fcfcfc;
         }
         
+        /* Kiểu cho input bị disabled */
+        .form-group input:disabled {
+            background-color: #f8f9fa;
+            color: var(--text-muted);
+        }
+        
         .form-group textarea {
             min-height: 100px;
             resize: vertical;
@@ -510,7 +559,7 @@
             flex-shrink: 0; /* Không co lại */
         }
         
-        /* === PROMPT 6: KIỂU DÁNG MODAL BẢO TRÌ === */
+        /* === CÁC PHẦN ĐẶC BIỆT TRONG MODAL === */
         .modal-section {
             margin-bottom: 25px;
             padding-bottom: 25px;
@@ -527,23 +576,7 @@
             color: var(--primary-color);
             margin-bottom: 15px;
         }
-        /* Căn chỉnh nút trong form */
-        .modal-section .form-group-inline {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .modal-section .form-group-inline label {
-            flex-shrink: 0;
-            margin-bottom: 0;
-        }
-        .modal-section .form-group-inline input,
-        .modal-section .form-group-inline select {
-            flex-grow: 1;
-        }
-
-
+        
         /* === HIỂN THỊ MODAL (CHỈ 1 MODAL ĐƯỢC BẬT) === */
         
         /* Mặc định ẩn tất cả */
@@ -556,7 +589,8 @@
             display: flex !important;
         }
         #maintenance-modal .modal-content {
-            width: 700px; /* Rộng hơn cho modal bảo trì */
+            width: 700px; /* Rộng hơn theo yêu cầu */
+            max-width: 95%;
         }
 
 
@@ -606,16 +640,25 @@
                 justify-content: flex-end;
             }
             
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .modal-section .form-group-inline {
+            .page-toolbar.filter-card {
                 flex-direction: column;
                 align-items: stretch;
             }
-            .modal-section .form-group-inline label {
-                margin-bottom: 8px;
+            .page-toolbar .toolbar-actions {
+                margin-left: 0;
+                flex-direction: column;
+            }
+            .page-toolbar .form-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .page-toolbar .form-group input,
+            .page-toolbar .form-group select {
+                width: 100%;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -643,9 +686,8 @@
         
         <!-- === TOP HEADER (ĐÃ NÂNG CẤP) === -->
         <header class="top-header">
-            <h1>Quản lý Sân bóng</h1>
+            <h1>Quản lý Sân bóng</h1> <!-- THAY ĐỔI: Tiêu đề mới -->
             <div class="user-info">
-                <button class="btn btn-primary"><i class="fas fa-plus"></i> + Thêm Sân mới</button>
                 <div class="user-profile">
                     <div class="avatar">CS</div>
                     <div>
@@ -656,74 +698,73 @@
             </div>
         </header>
 
-        <!-- === PROMPT 4: NỘI DUNG TRANG QUẢN LÝ SÂN BÓNG === -->
+        <!-- === PROMPT 4 (MỚI): NỘI DUNG TRANG QUẢN LÝ SÂN BÓNG === -->
         
+        <!-- Thanh công cụ (Toolbar) -->
+        <div class="card page-toolbar filter-card">
+            <div class="toolbar-actions">
+                <button class="btn btn-primary"><i class="fas fa-plus"></i> Thêm Sân mới</button>
+                <button class="btn btn-secondary">Quản lý Khung giờ</button>
+                <button class="btn btn-info">Quản lý Bảng giá</button>
+            </div>
+        </div>
+
+        <!-- Bảng Danh sách Sân bóng -->
         <div class="card">
             <div class="table-container">
                 <table class="table">
                     <thead>
                         <tr>
+                            <th>Mã sân</th>
                             <th>Tên sân</th>
-                            <th>Giá giờ thường</th>
-                            <th>Giá giờ vàng</th>
-                            <th>Trạng thái vận hành</th>
-                            <th>Tình trạng bảo trì</th>
+                            <th>Địa chỉ</th>
+                            <th>Mô tả</th>
+                            <th>Trạng thái</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><strong>Sân 1 (5v5)</strong></td>
-                            <td>250.000 VNĐ</td>
-                            <td>350.000 VNĐ</td>
+                            <td><strong>S01</strong></td>
+                            <td>Sân 1</td>
+                            <td>7 người - Sân A</td>
+                            <td>Sân cỏ nhân tạo, mới thay cỏ 2025</td>
                             <td><span class="badge badge-success">Đang hoạt động</span></td>
-                            <td><span>(Không có)</span></td>
                             <td class="table-actions">
-                                <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa thông tin</button>
+                                <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa</button>
                                 <button class="btn btn-warning btn-sm"><i class="fas fa-exclamation-triangle"></i> Bảo trì</button>
                             </td>
                         </tr>
                         <tr>
-                            <td><strong>Sân 2 (5v5)</strong></td>
-                            <td>250.000 VNĐ</td>
-                            <td>350.000 VNĐ</td>
+                            <td><strong>S02</strong></td>
+                            <td>Sân 2</td>
+                            <td>7 người - Sân B</td>
+                            <td>Sân cỏ nhân tạo</td>
                             <td><span class="badge badge-success">Đang hoạt động</span></td>
-                            <td><span class="badge badge-warning">Cần bảo trì (Rách lưới)</span></td>
                             <td class="table-actions">
-                                <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa thông tin</button>
+                                <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa</button>
                                 <button class="btn btn-warning btn-sm"><i class="fas fa-exclamation-triangle"></i> Bảo trì</button>
                             </td>
                         </tr>
                         <tr>
-                            <td><strong>Sân 3 (7v7)</strong></td>
-                            <td>400.000 VNĐ</td>
-                            <td>550.000 VNĐ</td>
-                            <td><span class="badge badge-success">Đang hoạt động</span></td>
-                            <td><span>(Không có)</span></td>
-                            <td class="table-actions">
-                                <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa thông tin</button>
-                                <button class="btn btn-warning btn-sm"><i class="fas fa-exclamation-triangle"></i> Bảo trì</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Sân 4 (5v5)</strong></td>
-                            <td>250.000 VNĐ</td>
-                            <td>350.000 VNĐ</td>
+                            <td><strong>S03</strong></td>
+                            <td>Sân 3</td>
+                            <td>5 người - Sân C</td>
+                            <td>Sân 5 người, cạnh căng tin</td>
                             <td><span class="badge badge-danger">Ngưng hoạt động</span></td>
-                            <td><span>(Đang sửa chữa)</span></td>
                             <td class="table-actions">
-                                <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa thông tin</button>
+                                <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa</button>
                                 <button class="btn btn-warning btn-sm"><i class="fas fa-exclamation-triangle"></i> Bảo trì</button>
                             </td>
                         </tr>
                          <tr>
-                            <td><strong>Sân 5 (7v7)</strong></td>
-                            <td>400.000 VNĐ</td>
-                            <td>550.000 VNĐ</td>
+                            <td><strong>S04</strong></td>
+                            <td>Sân 4</td>
+                            <td>7 người - Sân D</td>
+                            <td>Sân mới, có mái che</td>
                             <td><span class="badge badge-success">Đang hoạt động</span></td>
-                            <td><span>(Không có)</span></td>
                             <td class="table-actions">
-                                <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa thông tin</button>
+                                <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa</button>
                                 <button class="btn btn-warning btn-sm"><i class="fas fa-exclamation-triangle"></i> Bảo trì</button>
                             </td>
                         </tr>
@@ -734,7 +775,7 @@
         
     </main>
 
-    <!-- === PROMPT 6: MODAL "QUẢN LÝ BẢO TRÌ SÂN" (HIỂN THỊ TĨNH) === -->
+    <!-- === PROMPT 6 (MỚI): MODAL "QUẢN LÝ BẢO TRÌ SÂN" (HIỂN THỊ TĨNH) === -->
     <div class="modal-overlay" id="maintenance-modal">
         
         <!-- Nội dung modal -->
@@ -753,49 +794,74 @@
                 <div class="modal-section">
                     <h4>Tạo phiếu yêu cầu bảo trì mới</h4>
                     <form id="maintenance-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="report-date">Ngày báo cáo</label>
+                                <input type="date" id="report-date" name="report-date" value="2025-11-18">
+                            </div>
+                            <div class="form-group">
+                                <label for="maintenance-status">Trạng thái</label>
+                                <select id="maintenance-status" name="maintenance-status">
+                                    <option>Cần sửa chữa</option>
+                                    <option>Đang sửa chữa</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label for="maintenance-desc">Mô tả sự cố</label>
                             <input type="text" id="maintenance-desc" name="maintenance-desc" placeholder="Ví dụ: Rách lưới, Hỏng đèn...">
                         </div>
-                        <div class="form-group-inline">
-                            <label for="maintenance-priority">Mức độ ưu tiên</label>
-                            <select id="maintenance-priority" name="maintenance-priority">
-                                <option value="low">Thấp</option>
-                                <option value="medium">Trung bình</option>
-                                <option value="high">Cao</option>
-                            </select>
-                            <button type="button" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Gửi yêu cầu</button>
-                        </div>
+                        <button type="button" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Gửi yêu cầu</button>
                     </form>
                 </div>
 
-                <!-- Phần 2: Lịch sử bảo trì -->
+                <!-- Phần 2: Lịch sử bảo trì (SỬA LỖI: BỌC TRONG TABLE-CONTAINER) -->
                 <div class="modal-section">
                     <h4>Lịch sử bảo trì sân</h4>
-                    <div class="table-container">
+                    <div class="table-container"> <!-- SỬA LỖI SCROLLBAR -->
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Ngày tạo</th>
+                                    <th>Ngày báo cáo</th>
                                     <th>Mô tả</th>
                                     <th>Trạng thái</th>
+                                    <th>Ngày bắt đầu</th>
+                                    <th>Ngày kết thúc</th>
+                                    <th>Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>15/11/2025</td>
-                                    <td>Hỏng đèn chiếu sáng góc C</td>
-                                    <td><span class="badge badge-warning">Đang chờ xử lý</span></td>
-                                </tr>
-                                 <tr>
-                                    <td>01/10/2025</td>
-                                    <td>Thay lưới gôn (Sân 1)</td>
-                                    <td><span class="badge badge-success">Đã sửa xong</span></td>
+                                    <td>18/11/2025</td>
+                                    <td>Rách lưới</td>
+                                    <td><span class="badge badge-warning">Cần sửa chữa</span></td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td class="table-actions">
+                                        <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa</button>
+                                        <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Hoàn thành</button>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>15/09/2025</td>
-                                    <td>Sửa mặt cỏ nhân tạo</td>
+                                    <td>10/11/2025</td>
+                                    <td>Hỏng đèn chiếu sáng góc C</td>
+                                    <td><span class="badge badge-info">Đang sửa chữa</span></td>
+                                    <td>11/11/2025</td>
+                                    <td>-</td>
+                                     <td class="table-actions">
+                                        <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa</button>
+                                        <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Hoàn thành</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>01/10/2025</td>
+                                    <td>Sửa mặt cỏ</td>
                                     <td><span class="badge badge-success">Đã sửa xong</span></td>
+                                    <td>01/10/2025</td>
+                                    <td>05/10/2025</td>
+                                    <td class="table-actions">
+                                        <!-- Không có hành động khi đã xong -->
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

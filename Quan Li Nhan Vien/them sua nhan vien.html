@@ -19,9 +19,9 @@
             --danger-color: #dc3545;
             --warning-color: #ffc107;
             --info-color: #17a2b8;
-            --vip-color: #b71c1c; /* Màu VIP (Đỏ sậm) */
-            --gold-color: #ffab00; /* Màu Vàng */
-            --silver-color: #B0BEC5; /* Màu Bạc */
+            --vip-color: #b71c1c; 
+            --gold-color: #ffab00; 
+            --silver-color: #B0BEC5; 
             
             --bg-body: #F4F7FC;
             --bg-sidebar: #2C3E50;
@@ -44,6 +44,7 @@
             background-color: var(--bg-body);
             color: var(--text-dark);
             line-height: 1.6;
+            overflow: hidden; /* THÊM LẠI: Ngăn cuộn body khi modal mở */
         }
 
         a {
@@ -79,7 +80,7 @@
             justify-content: center;
             gap: 10px;
             margin-bottom: 30px;
-            font-size: 1.5rem; /* Điều chỉnh kích thước logo */
+            font-size: 1.5rem; 
             font-weight: 700;
             color: #fff;
             width: 100%;
@@ -96,7 +97,7 @@
         .sidebar-nav {
             width: 100%;
             flex-grow: 1;
-            padding: 0 20px; /* Thêm padding cho các mục nav */
+            padding: 0 20px; 
         }
 
         .sidebar-nav li {
@@ -107,20 +108,24 @@
         .sidebar-nav li a {
             display: flex;
             align-items: center;
-            gap: 15px; /* Tăng khoảng cách */
-            padding: 14px 20px; /* Điều chỉnh padding */
+            gap: 15px; 
+            padding: 14px 20px; 
             color: var(--text-light);
             opacity: 0.8;
             transition: all 0.3s ease;
-            font-size: 1rem; /* Kích thước chữ to hơn */
+            font-size: 1rem; 
             font-weight: 500;
             border-radius: 8px;
         }
 
         .sidebar-nav li a i {
-            font-size: 1.2rem; /* Đồng bộ kích thước icon */
-            width: 20px; /* Căn chỉnh icon */
+            font-size: 1.2rem; 
+            width: 20px; 
             text-align: center;
+        }
+        
+        .sidebar-nav li a span {
+            display: block; /* Hiển thị chữ */
         }
 
         .sidebar-nav li a:hover,
@@ -137,6 +142,8 @@
             background-color: var(--bg-body);
             margin-left: 240px; /* Offset cho sidebar đã nới rộng */
             transition: margin-left 0.3s ease;
+            height: 100vh; /* Thêm để nội dung chính cuộn */
+            overflow-y: auto;
         }
 
         .top-header {
@@ -160,22 +167,22 @@
 
         /* === NÚT CHUNG (Đã tái cấu trúc) === */
         .btn {
-            padding: 12px 20px; /* Tăng padding */
+            padding: 12px 20px; 
             border: none;
             border-radius: 8px;
-            font-size: 0.95rem; /* Kích thước chữ */
-            font-weight: 600; /* Đậm hơn */
+            font-size: 0.95rem; 
+            font-weight: 600; 
             transition: all 0.3s ease;
             cursor: pointer;
             text-decoration: none;
-            display: inline-flex; /* Dùng flex để căn icon */
+            display: inline-flex; 
             align-items: center;
             justify-content: center;
-            gap: 8px; /* Khoảng cách icon và chữ */
+            gap: 8px; 
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .btn:hover {
-            transform: translateY(-2px); /* Hiệu ứng nhấc lên */
+            transform: translateY(-2px); 
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
         .btn:active {
@@ -267,29 +274,55 @@
         /* === GENERAL CARD STYLING === */
         .card {
             background-color: var(--bg-card);
-            border-radius: 16px; /* Bo tròn nhiều hơn */
-            padding: 25px 30px; /* Tăng padding */
+            border-radius: 16px; 
+            padding: 25px 30px; 
             box-shadow: var(--box-shadow-light);
             margin-bottom: 25px;
             border: 1px solid var(--border-light);
         }
         
-        /* === PAGE TOOLBAR (Chung) === */
-
-        .page-toolbar {
+        /* === PAGE TOOLBAR (Dùng cho Quản lý Nhân viên) === */
+        .page-toolbar.filter-card {
+            display: flex;
+            flex-wrap: wrap; /* Cho phép xuống dòng trên di động */
+            gap: 20px;
+            align-items: center;
+            padding: 20px 25px;
+        }
+        .page-toolbar .form-group {
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .page-toolbar .form-group label {
+            margin-bottom: 0;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .page-toolbar .form-group input,
+        .page-toolbar .form-group select {
+            padding: 10px 12px;
+            font-size: 0.95rem;
+            width: auto; /* Tự động co dãn */
+            min-width: 180px;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            font-family: 'Inter', sans-serif;
+        }
+        .page-toolbar .toolbar-actions {
+            margin-left: auto; /* Đẩy các nút sang phải */
             display: flex;
             gap: 15px;
-            margin-bottom: 25px;
-            align-items: center;
+            flex-wrap: wrap; /* Cho phép nút xuống dòng nếu không đủ chỗ */
         }
 
         .search-bar {
-            flex-grow: 1; /* Cho thanh tìm kiếm chiếm nhiều không gian */
+            flex-grow: 1; 
             position: relative;
+            min-width: 250px; /* Chiều rộng tối thiểu */
         }
-
-        .search-bar input,
-        .page-toolbar input[type="date"] {
+        .search-bar input {
             width: 100%;
             padding: 12px 15px;
             border-radius: 8px;
@@ -297,20 +330,9 @@
             font-size: 1rem;
             font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
+            padding-left: 45px; 
         }
-        .search-bar input {
-            padding-left: 45px; /* Padding cho icon */
-        }
-        
-        .page-toolbar label {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            white-space: nowrap; /* Không xuống dòng */
-        }
-
-        .search-bar input:focus,
-        .page-toolbar input[type="date"]:focus {
+        .search-bar input:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
@@ -324,29 +346,20 @@
             font-size: 1.1rem;
         }
         
-        /* Cụm nút bên phải toolbar */
-        .toolbar-actions {
-            display: flex;
-            gap: 15px;
-            margin-left: auto; /* Đẩy các nút sang phải */
-        }
         
         /* === TABLE STYLING (Chung) === */
         .table-container {
             overflow-x: auto;
         }
-
         .table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
             font-size: 0.95rem;
         }
-
         .table thead tr {
             background-color: #f8f9fa;
         }
-
         .table th {
             padding: 16px 15px;
             font-weight: 600;
@@ -355,24 +368,22 @@
             font-size: 0.8rem;
             letter-spacing: 0.5px;
         }
-
         .table tbody tr {
             border-bottom: 1px solid var(--border-light);
-            transition: background-color 0.2s ease;
-        }
-        .table tbody tr:last-child {
-            border-bottom: none;
         }
         .table tbody tr:hover {
             background-color: #fcfdff;
         }
-
         .table td {
             padding: 16px 15px;
             vertical-align: middle;
             color: var(--text-dark);
         }
-        
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+
         /* Tên khách hàng/nhân viên */
         .table td .customer-name {
             font-weight: 600;
@@ -381,20 +392,8 @@
             color: var(--text-muted);
             font-size: 0.9rem;
         }
-        
-        .table td .invoice-id {
-            font-weight: 600;
-            color: var(--primary-color);
-            font-family: monospace;
-            font-size: 1.05rem;
-        }
 
-        .table-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        /* === BADGE STYLING (Chung) === */
+        /* === BADGE STYLING (NÂNG CẤP) === */
         .badge {
             padding: 5px 12px;
             border-radius: 20px; /* Hình con nhộng */
@@ -424,35 +423,12 @@
              color: var(--primary-color);
              border-color: var(--primary-color);
         }
-        /* Badge cho Nhân viên (MỚI) */
         .badge-secondary {
             background-color: #f0f3f5;
             color: var(--secondary-color);
             border-color: #cfd8dc;
         }
         
-        /* Hạng thành viên */
-        .badge-vip {
-            background-color: #fde8e8;
-            color: var(--vip-color);
-            border-color: var(--vip-color);
-        }
-        .badge-gold {
-            background-color: #fff8e1;
-            color: var(--gold-color);
-            border-color: var(--gold-color);
-        }
-        .badge-silver {
-            background-color: #eceff1;
-            color: var(--silver-color);
-            border-color: var(--silver-color);
-        }
-        /* Badge cho PTTT */
-        .badge-method {
-            background-color: #f0f3f5;
-            color: var(--secondary-color);
-            border-color: #cfd8dc;
-        }
 
         /* === MODAL STYLING (CHUNG) === */
 
@@ -550,7 +526,7 @@
         .form-group input[type="time"],
         .form-group input[type="number"],
         .form-group input[type="email"],
-        .form-group input[type="password"], /* Thêm password */
+        .form-group input[type="password"],
         .form-group select,
         .form-group textarea {
             width: 100%;
@@ -583,13 +559,6 @@
             gap: 20px;
         }
         
-        /* Ghi chú nhỏ cho form */
-        .form-group .form-note {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 5px;
-        }
-
         .modal-footer {
             display: flex;
             justify-content: flex-end;
@@ -617,14 +586,8 @@
             color: var(--primary-color);
             margin-bottom: 15px;
         }
-
-        /* === KIỂU DÁNG CỤ THỂ CHO CÁC MODAL === */
-
-        /* Kích thước */
-        #employee-info-modal .modal-content {
-            width: 700px;
-        }
-
+        
+        
         /* === HIỂN THỊ MODAL (CHỈ 1 MODAL ĐƯỢC BẬT) === */
         
         /* Mặc định ẩn tất cả */
@@ -632,7 +595,7 @@
             display: none;
         }
         
-        /* === PROMPT 16 (HIỆN TẠI): HIỂN THỊ TĨNH MODAL NHÂN VIÊN === */
+        /* === PROMPT 16 (HIỆN TẠI): HIỂN THỊ TĨNH MODAL THÊM NHÂN VIÊN === */
         #employee-info-modal {
             display: flex !important;
         }
@@ -650,9 +613,16 @@
                 justify-content: center;
             }
             .sidebar-nav li a {
+                flex-direction: column; /* Quay lại icon-only */
                 justify-content: center;
                 padding: 15px 0;
+                font-size: 0.8em;
             }
+             .sidebar-nav li a i {
+                font-size: 1.3em;
+                margin-bottom: 5px;
+             }
+             
             .main-content {
                 margin-left: 80px; /* Điều chỉnh margin */
             }
@@ -672,36 +642,23 @@
                 align-items: flex-start;
                 gap: 15px;
             }
-            .top-header h1 {
-                font-size: 1.5rem;
-            }
             .user-info {
                 width: 100%;
                 justify-content: flex-end;
             }
-            .page-toolbar {
-                flex-direction: column;
-                align-items: stretch; /* Kéo dài các phần tử */
-            }
-            .toolbar-actions {
-                margin-left: 0;
+            
+            .page-toolbar.filter-card {
                 flex-direction: column;
                 align-items: stretch;
             }
+            .page-toolbar .toolbar-actions {
+                margin-left: 0;
+                flex-direction: column;
+            }
+            .search-bar {
+                min-width: 0;
+            }
             
-            .modal-content {
-                width: 95%;
-                max-width: 95%;
-            }
-            .modal-body {
-                padding: 20px;
-            }
-            .modal-header, .modal-footer {
-                padding: 15px 20px;
-            }
-            .modal-header h3 {
-                font-size: 1.2rem;
-            }
             .form-row {
                 grid-template-columns: 1fr;
             }
@@ -710,7 +667,7 @@
 </head>
 <body>
 
-    <!-- === SIDEBAR === -->
+    <!-- === SIDEBAR (ĐÃ NÂNG CẤP) === -->
     <aside class="sidebar">
         <div class="logo">
             <i class="fas fa-futbol"></i> <span>Thịnh Vượng</span>
@@ -729,9 +686,9 @@
     <!-- === MAIN CONTENT === -->
     <main class="main-content">
         
-        <!-- === TOP HEADER === -->
+        <!-- === TOP HEADER (ĐÃ NÂNG CẤP) === -->
         <header class="top-header">
-            <h1>Quản lý Nhân viên</h1>
+            <h1>Quản lý Nhân viên</h1> <!-- THAY ĐỔI: Tiêu đề mới -->
             <div class="user-info">
                 <div class="user-profile">
                     <div class="avatar">CS</div>
@@ -745,68 +702,85 @@
 
         <!-- === PROMPT 15: NỘI DUNG TRANG QUẢN LÝ NHÂN VIÊN === -->
         
-        <!-- Thanh công cụ -->
-        <div class="page-toolbar">
+        <!-- Thanh công cụ (Toolbar) -->
+        <div class="card page-toolbar filter-card">
             <div class="search-bar">
                 <i class="fas fa-search"></i>
                 <input type="text" placeholder="Tìm nhân viên (SĐT, Tên)...">
             </div>
             <div class="toolbar-actions">
                 <button class="btn btn-primary"><i class="fas fa-plus"></i> Thêm nhân viên mới</button>
-                <button class="btn btn-secondary"><i class="fas fa-calendar-week"></i> Quản lý Lịch làm việc</button>
-                <button class="btn btn-info"><i class="fas fa-clipboard-check"></i> Xem Bảng chấm công</button>
+                <button class="btn btn-secondary">Quản lý Ca làm việc</button>
+                <button class="btn btn-info">Quản lý Lịch làm việc</button>
+                <button class="btn btn-warning">Xem Bảng chấm công</button>
             </div>
         </div>
 
-        <!-- Bảng Danh sách Nhân viên -->
+        <!-- Bảng Danh sách Hóa đơn -->
         <div class="card">
             <div class="table-container">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Họ và Tên</th>
+                            <th>Họ tên</th>
                             <th>Số điện thoại</th>
-                            <th>Email</th>
-                            <th>Vai trò (Phân quyền)</th>
+                            <th>Tên đăng nhập</th>
+                            <th>Vai trò</th>
+                            <th>Trạng thái</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>
-                                <div class="customer-name">Võ Hữu Thái</div>
-                                <div class="customer-phone">(Chủ sân)</div>
+                                <div class="customer-name">Chủ Sân (Admin)</div>
+                                <div class="customer-phone">0912345678</div>
                             </td>
                             <td>0912345678</td>
-                            <td>thai.vo@thinhvuongfc.com</td>
+                            <td>admin_thinhvuong</td>
                             <td><span class="badge badge-primary">Chủ sân (Admin)</span></td>
+                            <td><span class="badge badge-success">Đang làm việc</span></td>
                             <td class="table-actions">
-                                <button class="btn btn-sm btn-secondary"><i class="fas fa-edit"></i> Sửa</button>
-                                <button class="btn btn-sm btn-danger-outline"><i class="fas fa-trash"></i> Xóa</button>
+                                <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa</button>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <div class="customer-name">Nguyễn Văn An</div>
+                                <div class="customer-name">Phạm Văn Nam</div>
+                                <div class="customer-phone">0987654321</div>
                             </td>
                             <td>0987654321</td>
-                            <td>an.nguyen@thinhvuongfc.com</td>
+                            <td>nam_pv</td>
                             <td><span class="badge badge-secondary">Nhân viên</span></td>
+                            <td><span class="badge badge-success">Đang làm việc</span></td>
                             <td class="table-actions">
-                                <button class="btn btn-sm btn-secondary"><i class="fas fa-edit"></i> Sửa</button>
-                                <button class="btn btn-sm btn-danger-outline"><i class="fas fa-trash"></i> Xóa</button>
+                                <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa</button>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <div class="customer-name">Trần Thị Bích</div>
+                                <div class="customer-phone">0905111222</div>
                             </td>
                             <td>0905111222</td>
-                            <td>bich.tran@thinhvuongfc.com</td>
+                            <td>bich_tt</td>
                             <td><span class="badge badge-secondary">Nhân viên</span></td>
+                            <td><span class="badge badge-success">Đang làm việc</span></td>
                             <td class="table-actions">
-                                <button class="btn btn-sm btn-secondary"><i class="fas fa-edit"></i> Sửa</button>
-                                <button class="btn btn-sm btn-danger-outline"><i class="fas fa-trash"></i> Xóa</button>
+                                <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="customer-name">Lê Văn Luyện</div>
+                                <div class="customer-phone">0905333444</div>
+                            </td>
+                            <td>0905333444</td>
+                            <td>luyen_lv</td>
+                            <td><span class="badge badge-secondary">Nhân viên</span></td>
+                            <td><span class="badge badge-danger">Đã nghỉ việc</span></td>
+                            <td class="table-actions">
+                                <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa</button>
                             </td>
                         </tr>
                     </tbody>
@@ -816,70 +790,78 @@
         
     </main>
 
-    <!-- === (CÁC MODAL ĐÃ BỊ XÓA THEO YÊU CẦU) === -->
-
-    <!-- === PROMPT 16 (HIỆN TẠI): MODAL "THÊM/SỬA NHÂN VIÊN" === -->
+    <!-- === PROMPT 16 (MỚI): MODAL "THÊM/SỬA NHÂN VIÊN" (HIỂN THỊ TĨNH) === -->
     <div class="modal-overlay" id="employee-info-modal">
+        
         <!-- Nội dung modal -->
         <div class="modal-content">
+            
             <!-- Header modal -->
             <div class="modal-header">
                 <h3>Thông tin Nhân viên</h3>
                 <span class="modal-close">&times;</span>
             </div>
-            <!-- Thân modal -->
+            
+            <!-- Thân modal (chứa form) -->
             <div class="modal-body">
                 <form id="employee-form">
-                    <!-- Phần 1: Thông tin cá nhân -->
-                    <div class="modal-section">
-                        <h4>Thông tin cá nhân</h4>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="emp-name">Họ và Tên</label>
-                                <input type="text" id="emp-name" name="emp-name">
-                            </div>
-                            <div class="form-group">
-                                <label for="emp-dob">Ngày sinh</label>
-                                <input type="date" id="emp-dob" name="emp-dob">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="emp-phone">Số điện thoại</label>
-                                <input type="tel" id="emp-phone" name="emp-phone">
-                            </div>
-                            <div class="form-group">
-                                <label for="emp-email">Email</label>
-                                <input type="email" id="emp-email" name="emp-email">
-                            </div>
-                        </div>
-                    </div>
                     
-                    <!-- Phần 2: Tài khoản & Phân quyền -->
+                    <!-- Phần 1: Bảng NHÂN VIÊN -->
                     <div class="modal-section">
-                        <h4>Tài khoản & Phân quyền</h4>
+                        <h4>Thông tin cá nhân (Bảng NHÂN VIÊN)</h4>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="emp-username">Tên đăng nhập</label>
-                                <input type="text" id="emp-username" name="emp-username" placeholder="Sử dụng Email hoặc SĐT">
+                                <label for="employee-name">Họ và Tên</label>
+                                <input type="text" id="employee-name" name="employee-name" placeholder="Nguyễn Văn A">
                             </div>
                             <div class="form-group">
-                                <label for="emp-password">Mật khẩu</label>
-                                <input type="password" id="emp-password" name="emp-password">
-                                <p class="form-note">Bỏ trống nếu không muốn đổi</p>
+                                <label for="employee-phone">Số điện thoại</label>
+                                <input type="tel" id="employee-phone" name="employee-phone" placeholder="09xxxxxxx">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="emp-role">Vai trò (Phân quyền)</label>
-                            <select id="emp-role" name="emp-role">
-                                <option value="employee" selected>Nhân viên</option>
-                                <option value="admin">Chủ sân (Admin)</option>
+                            <label for="employee-status">Trạng thái (Nhân viên)</label>
+                            <select id="employee-status" name="employee-status">
+                                <option value="working">Đang làm việc</option>
+                                <option value="quit">Đã nghỉ việc</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <!-- Phần 2: Bảng TÀI KHOẢN & VAI TRÒ -->
+                    <div class="modal-section">
+                        <h4>Tài khoản & Phân quyền (Bảng TÀI KHOẢN & VAI TRÒ)</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="account-username">Tên đăng nhập</label>
+                                <input type="text" id="account-username" name="account-username" placeholder="nguyenvana">
+                            </div>
+                             <div class="form-group">
+                                <label for="account-password">Mật khẩu</label>
+                                <input type="password" id="account-password" name="account-password" placeholder="Bỏ trống nếu không đổi">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="account-role">Vai trò (VAI TRÒ)</label>
+                                <select id="account-role" name="account-role">
+                                    <option value="1">Chủ sân (Admin)</option>
+                                    <option value="2">Nhân viên</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="account-status">Trạng thái (Tài khoản)</label>
+                                <select id="account-status" name="account-status">
+                                    <option value="active">Đang hoạt động</option>
+                                    <option value="locked">Bị khóa</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </form>
             </div>
-            <!-- Footer modal -->
+            
+            <!-- Footer modal (chứa các nút) -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary">Hủy</button>
                 <button type="button" class="btn btn-primary">Lưu Nhân viên</button>

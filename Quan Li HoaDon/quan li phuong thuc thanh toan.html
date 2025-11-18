@@ -281,7 +281,7 @@
             border: 1px solid var(--border-light);
         }
         
-        /* === PAGE TOOLBAR / FILTER CARD (Dùng cho Lịch đặt sân) === */
+        /* === PAGE TOOLBAR / FILTER CARD (Dùng cho Quản lý Hóa đơn) === */
         .page-toolbar.filter-card {
             display: flex;
             flex-wrap: wrap; /* Cho phép xuống dòng trên di động */
@@ -309,11 +309,15 @@
             border-radius: 8px;
             border: 1px solid var(--border-light);
             font-family: 'Inter', sans-serif;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
-        .page-toolbar .toolbar-group {
-            display: flex;
-            gap: 10px;
+        
+        .page-toolbar .form-group input:focus {
+             outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
         }
+
         .page-toolbar .toolbar-actions {
             margin-left: auto; /* Đẩy các nút sang phải */
             display: flex;
@@ -323,7 +327,6 @@
         
         
         /* === TABLE STYLING (Chung) === */
-        /* (Để lại phòng khi dùng ở modal) */
         .table-container {
             overflow-x: auto;
         }
@@ -358,6 +361,12 @@
         .table-actions {
             display: flex;
             gap: 10px;
+        }
+        
+        .table td strong {
+            color: var(--text-dark);
+            font-family: monospace;
+            font-size: 1.05rem;
         }
 
         /* === BADGE STYLING (NÂNG CẤP) === */
@@ -401,138 +410,6 @@
             border-color: var(--gold-color);
         }
         
-
-        /* === PROMPT 11: KIỂU DÁNG LỊCH ĐẶT SÂN (TIMELINE) === */
-        .schedule-container {
-            padding: 0; /* Ghi đè padding của .card */
-            overflow: hidden; /* Ẩn overflow của card */
-            border-radius: 16px; /* Giữ bo góc */
-        }
-        
-        .schedule-grid-wrapper {
-             max-height: calc(100vh - 300px); /* Giới hạn chiều cao và cho phép cuộn */
-             overflow: auto;
-             border-top: 1px solid var(--border-light);
-        }
-
-        .schedule-grid {
-            display: grid;
-            /* 100px cho giờ, 5 sân, mỗi sân 200px. Tổng 1100px */
-            grid-template-columns: 100px repeat(5, 1fr); 
-            min-width: 1000px; /* Đảm bảo có chiều rộng tối thiểu để cuộn */
-        }
-        
-        /* Tiêu đề (Tên sân) */
-        .schedule-header {
-            padding: 15px 10px;
-            font-weight: 600;
-            text-align: center;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid var(--border-light);
-            border-left: 1px solid var(--border-light);
-            position: sticky; /* Giữ tiêu đề khi cuộn */
-            top: 0;
-            z-index: 10;
-        }
-        .schedule-header:first-child {
-            /* Ô trống góc trên bên trái */
-            border-left: none;
-            position: sticky;
-            left: 0;
-            z-index: 11;
-        }
-
-        /* Cột Khung giờ */
-        .schedule-time-labels {
-            grid-column: 1 / 2;
-            background-color: #fcfcfc;
-            position: sticky;
-            left: 0;
-            z-index: 9;
-        }
-        .schedule-time-labels > div {
-            height: 60px; /* 1 giờ = 60px */
-            padding: 5px;
-            text-align: right;
-            font-weight: 500;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            border-bottom: 1px dotted var(--border-light);
-            border-right: 1px solid var(--border-light);
-            padding-right: 10px;
-        }
-        
-        /* Khu vực Lưới chính (Các sân) */
-        .schedule-main {
-            grid-column: 2 / -1; /* Từ cột 2 đến hết */
-            display: grid;
-            grid-template-columns: repeat(5, 1fr); /* 5 sân */
-            position: relative; /* Quan trọng cho absolute positioning */
-        }
-
-        /* Cột của mỗi sân */
-        .schedule-column {
-            border-left: 1px solid var(--border-light);
-        }
-        /* Đường kẻ ngang (giả lập) */
-        .schedule-column > div {
-            height: 60px; /* 1 giờ = 60px */
-            border-bottom: 1px dotted var(--border-light);
-        }
-        .schedule-column:first-child > div {
-             border-left: none;
-        }
-
-        /* Khối Đặt sân (Quan trọng) */
-        .booking-block {
-            position: absolute;
-            padding: 8px 10px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border: 1px solid rgba(0,0,0,0.1);
-            z-index: 5;
-            /* Thêm lề nhỏ để không dính vào vạch */
-            margin: 1px 2px;
-        }
-        .booking-block:hover {
-            opacity: 0.8;
-            cursor: pointer;
-            z-index: 6;
-        }
-        .booking-block strong {
-            display: block;
-            font-size: 0.9rem;
-            margin-bottom: 2px;
-            white-space: nowrap;
-        }
-        
-        /* Màu sắc khối */
-        .booking-success {
-            background-color: var(--success-color);
-            color: white;
-        }
-        .booking-warning {
-            background-color: var(--warning-color);
-            color: #212529;
-        }
-        .booking-secondary {
-            background-color: #e9ecef;
-            color: var(--secondary-color);
-        }
-        .booking-danger {
-            background-color: var(--danger-color);
-            color: white;
-        }
-        .booking-info {
-            background-color: var(--info-color);
-            color: white;
-        }
-
 
         /* === MODAL STYLING (CHUNG) === */
 
@@ -592,13 +469,6 @@
             font-size: 1.5rem;
             font-weight: 600;
             color: var(--text-dark);
-        }
-        
-        .modal-header .header-note {
-            font-size: 0.9rem;
-            font-weight: 400;
-            color: var(--text-muted);
-            margin-top: 5px;
         }
 
         .modal-close {
@@ -680,55 +550,23 @@
             flex-shrink: 0; /* Không co lại */
         }
         
-        /* === PROMPT 14: KIỂU DÁNG MODAL THANH TOÁN === */
-        .payment-details-body {
-            display: grid;
-            grid-template-columns: auto 1fr; /* Cột 1: Tiêu đề, Cột 2: Giá trị */
-            gap: 10px 20px;
-            align-items: center;
+        /* === CÁC PHẦN ĐẶC BIỆT TRONG MODAL === */
+        .modal-section {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px dashed var(--border-light);
         }
-        .payment-details-body h4 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-align: right;
-            margin: 0;
+        .modal-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
         }
-        .payment-details-body p {
+        .modal-section h4 {
             font-size: 1.1rem;
-            font-weight: 500;
-            color: var(--text-dark);
-            margin: 0;
-        }
-        .payment-details-body .form-group {
-            grid-column: 1 / -1; /* Form group chiếm cả 2 cột */
-            margin-top: 10px;
-        }
-        .payment-details-body hr {
-            grid-column: 1 / -1;
-            border: none;
-            border-top: 1px dashed var(--border-light);
-            margin: 10px 0;
-        }
-        .payment-summary {
-            grid-column: 1 / -1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-        }
-        .payment-summary h3 {
-            font-size: 1.3rem;
             font-weight: 600;
-            margin: 0;
+            color: var(--primary-color);
+            margin-bottom: 15px;
         }
-        .payment-summary h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--danger-color);
-            margin: 0;
-        }
-
         
         
         /* === HIỂN THỊ MODAL (CHỈ 1 MODAL ĐƯỢC BẬT) === */
@@ -738,9 +576,12 @@
             display: none;
         }
         
-        /* === PROMPT 14 (HIỆN TẠI): HIỂN THỊ TĨNH MODAL THANH TOÁN === */
-        #payment-modal {
+        /* === PROMPT 16 (HIỆN TẠI): HIỂN THỊ TĨNH MODAL PTTT === */
+        #payment-methods-modal {
             display: flex !important;
+        }
+        #payment-methods-modal .modal-content {
+            width: 700px;
         }
 
 
@@ -769,11 +610,6 @@
             .main-content {
                 margin-left: 80px; /* Điều chỉnh margin */
             }
-            
-            /* Responsive Lịch */
-            .schedule-grid {
-                grid-template-columns: 100px repeat(5, 200px); /* Đặt chiều rộng cố định cho các cột sân để cuộn */
-            }
         }
 
         @media (max-width: 768px) {
@@ -799,10 +635,17 @@
                 flex-direction: column;
                 align-items: stretch;
             }
-            .page-toolbar .toolbar-actions,
-            .page-toolbar .btn-primary {
+            .page-toolbar .toolbar-actions {
                 margin-left: 0;
                 flex-direction: column;
+            }
+            .page-toolbar .form-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .page-toolbar .form-group input,
+            .page-toolbar .form-group select {
+                width: 100%;
             }
             
             .form-row {
@@ -821,9 +664,9 @@
         <ul class="sidebar-nav">
             <li><a href="#"><i class="fas fa-tachometer-alt"></i> <span>Tổng quan</span></a></li>
             <li><a href="#"><i class="fas fa-futbol"></i> <span>Sân bóng</span></a></li>
-            <li><a href="#" class="active"><i class="fas fa-calendar-alt"></i> <span>Đặt sân</span></a></li>
+            <li><a href="#"><i class="fas fa-calendar-alt"></i> <span>Đặt sân</span></a></li>
             <li><a href="#"><i class="fas fa-users"></i> <span>Khách hàng</span></a></li>
-            <li><a href="#"><i class="fas fa-credit-card"></i> <span>Thanh toán</span></a></li>
+            <li><a href="#" class="active"><i class="fas fa-credit-card"></i> <span>Thanh toán</span></a></li>
             <li><a href="#"><i class="fas fa-user-tie"></i> <span>Nhân viên</span></a></li>
             <li><a href="#"><i class="fas fa-chart-line"></i> <span>Báo cáo</span></a></li>
         </ul>
@@ -834,7 +677,7 @@
         
         <!-- === TOP HEADER (ĐÃ NÂNG CẤP) === -->
         <header class="top-header">
-            <h1>Lịch đặt sân (Timeline)</h1>
+            <h1>Quản lý Hóa đơn</h1> <!-- THAY ĐỔI: Tiêu đề mới -->
             <div class="user-info">
                 <div class="user-profile">
                     <div class="avatar">CS</div>
@@ -846,193 +689,174 @@
             </div>
         </header>
 
-        <!-- === PROMPT 11: NỘI DUNG TRANG LỊCH ĐẶT SÂN === -->
+        <!-- === PROMPT 15 (MỚI): NỘI DUNG TRANG QUẢN LÝ HÓA ĐƠN === -->
         
-        <!-- Thanh công cụ (Toolbar) -->
+        <!-- Thanh Lọc (Filter) -->
         <div class="card page-toolbar filter-card">
             <div class="form-group">
-                <label for="schedule-date">Chọn ngày:</label>
-                <!-- THAY ĐỔI: Sửa value thành 2025-11-18 -->
-                <input type="date" id="schedule-date" value="2025-11-18">
+                <label for="filter-date">Lọc theo ngày:</label>
+                <input type="date" id="filter-date" name="filter-date">
             </div>
-            <div class="toolbar-group">
-                <button class="btn btn-secondary"><i class="fas fa-chevron-left"></i></button>
-                <button class="btn btn-secondary">Hôm nay</button>
-                <button class="btn btn-secondary"><i class="fas fa-chevron-right"></i></button>
+            <div class="form-group">
+                <input type="text" placeholder="Tìm (Mã phiếu, SĐT)..." style="min-width: 200px;">
             </div>
+            <button class="btn btn-primary" style="margin-left: 10px;"><i class="fas fa-search"></i> Tìm kiếm</button>
+            
             <div class="toolbar-actions">
-                <button class="btn btn-primary"><i class="fas fa-plus"></i> Thêm Lịch đặt</button>
+                <button class="btn btn-warning"><i class="fas fa-credit-card"></i> Quản lý Phương thức TT</button>
             </div>
         </div>
 
-        <!-- Giao diện Lịch (Schedule View) -->
-        <div class="card schedule-container">
-            <!-- Wrapper để cuộn nội dung lịch -->
-            <div class="schedule-grid-wrapper">
-                <div class="schedule-grid">
-                    
-                    <!-- Hàng 1: Tiêu đề (Tên sân) -->
-                    <div class="schedule-header">Khung giờ</div>
-                    <div class="schedule-header">Sân 1 (7 người)</div>
-                    <div class="schedule-header">Sân 2 (7 người)</div>
-                    <div class="schedule-header">Sân 3 (5 người)</div>
-                    <div class="schedule-header">Sân 4 (7 người)</div>
-                    <div class="schedule-header">Sân 5 (5 người)</div>
-
-                    <!-- Cột 1: Khung giờ -->
-                    <div class="schedule-time-labels">
-                        <div>07:00-08:00</div>
-                        <div>08:00-09:00</div>
-                        <div>09:00-10:00</div>
-                        <div>10:00-11:00</div>
-                        <div>11:00-12:00</div>
-                        <div>12:00-13:00</div>
-                        <div>13:00-14:00</div>
-                        <div>14:00-15:00</div>
-                        <div>15:00-16:00</div>
-                        <div>16:00-17:00</div>
-                        <div>17:00-18:00</div>
-                        <div>18:00-19:00</div>
-                        <div>19:00-20:00</div>
-                        <div>20:00-21:00</div>
-                        <div>21:00-22:00</div>
-                    </div>
-
-                    <!-- Lưới chính (Các cột sân) -->
-                    <div class="schedule-main">
-                        <!-- Cột Sân 1 (Để vẽ lưới) -->
-                        <div class="schedule-column">
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            <div></div>
-                        </div>
-                        <!-- Cột Sân 2 -->
-                        <div class="schedule-column">
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            <div></div>
-                        </div>
-                        <!-- Cột Sân 3 -->
-                        <div class="schedule-column">
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            <div></div>
-                        </div>
-                        <!-- Cột Sân 4 -->
-                        <div class="schedule-column">
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            <div></div>
-                        </div>
-                        <!-- Cột Sân 5 -->
-                        <div class="schedule-column">
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            <div></div>
-                        </div>
-
-                        <!-- === CÁC KHỐI ĐẶT SÂN (ĐÈ LÊN LƯỚI) === -->
-                        <!-- 
-                            Công thức (Start at 7:00, 60px/hour):
-                            - top = (giờ_bắt_đầu - 7) * 60px 
-                            - height = (thời_lượng_phút / 60) * 60px
-                            - left = (index_sân) * 20%
-                            - width = 20% (trừ đi lề)
-                        -->
-
-                        <!-- Sân 2 (18:00 - 19:30), Đã cọc -->
-                        <div class="booking-block booking-warning" 
-                             style="top: calc((18 - 7) * 60px); height: 90px; left: 20%; width: calc(20% - 4px);">
-                            <strong>Anh Thái</strong>
-                            09xxxxxxx
-                        </div>
-
-                        <!-- Sân 4 (18:30 - 20:00), Chờ thanh toán -->
-                        <div class="booking-block booking-secondary" 
-                             style="top: calc((18.5 - 7) * 60px); height: 90px; left: 60%; width: calc(20% - 4px);">
-                            <strong>Anh Giáp</strong>
-                            Chờ thanh toán
-                        </div>
-
-                        <!-- Sân 1 (19:00 - 20:00), Đang đá -->
-                        <div class="booking-block booking-info" 
-                             style="top: calc((19 - 7) * 60px); height: 60px; left: 0%; width: calc(20% - 4px);">
-                            <strong>Chị Thủy</strong>
-                            Đang đá...
-                        </div>
-                        
-                        <!-- Sân 3 (Cả ngày), Bảo trì -->
-                         <div class="booking-block booking-danger" 
-                             style="top: 0px; height: calc(15 * 60px); left: 40%; width: calc(20% - 4px);">
-                            <strong>SÂN BẢO TRÌ</strong>
-                            (Hỏng đèn)
-                        </div>
-                    </div>
-                </div>
+        <!-- Bảng Danh sách Hóa đơn -->
+        <div class="card">
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã hóa đơn</th>
+                            <th>Mã phiếu đặt</th>
+                            <th>Nhân viên lập</th>
+                            <th>Ngày lập</th>
+                            <th>Tổng tiền</th>
+                            <th>Phương thức TT</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>#HD12345</strong></td>
+                            <td>#PD12345</td>
+                            <td>Phạm Văn Nam</td>
+                            <td>18/11/2025 18:30</td>
+                            <td>450.000 VNĐ</td>
+                            <td><span class="badge badge-secondary">Tiền mặt</span></td>
+                            <td class="table-actions">
+                                <button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Xem chi tiết</button>
+                                <button class="btn btn-primary btn-sm"><i class="fas fa-print"></i> In hóa đơn</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>#HD12344</strong></td>
+                            <td>#PD12340</td>
+                            <td>Trần Thị Bích</td>
+                            <td>18/11/2025 17:00</td>
+                            <td>300.000 VNĐ</td>
+                            <td><span class="badge badge-secondary">Chuyển khoản</span></td>
+                            <td class="table-actions">
+                                <button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Xem chi tiết</button>
+                                <button class="btn btn-primary btn-sm"><i class="fas fa-print"></i> In hóa đơn</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>#HD12343</strong></td>
+                            <td>#PD12335</td>
+                            <td>Phạm Văn Nam</td>
+                            <td>17/11/2025 20:00</td>
+                            <td>550.000 VNĐ</td>
+                            <td><span class="badge badge-secondary">MoMo</span></td>
+                            <td class="table-actions">
+                                <button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Xem chi tiết</button>
+                                <button class="btn btn-primary btn-sm"><i class="fas fa-print"></i> In hóa đơn</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         
     </main>
 
-    <!-- === PROMPT 14 (MỚI): MODAL "XỬ LÝ THANH TOÁN" (HIỂN THỊ TĨNH) === -->
-    <div class="modal-overlay" id="payment-modal">
+    <!-- === PROMPT 16 (MỚI): MODAL "QUẢN LÝ PHƯƠNG THỨC THANH TOÁN" (HIỂN THỊ TĨNH) === -->
+    <div class="modal-overlay" id="payment-methods-modal">
         
         <!-- Nội dung modal -->
         <div class="modal-content">
             
             <!-- Header modal -->
             <div class="modal-header">
-                <h3>Xác nhận Thanh toán (Mã phiếu: #PD12345)</h3>
+                <h3>Quản lý Phương thức Thanh toán</h3>
                 <span class="modal-close">&times;</span>
             </div>
             
             <!-- Thân modal (chứa form) -->
             <div class="modal-body">
                 
-                <!-- Phần 1: Chi tiết thanh toán -->
-                <div class="payment-details-body">
-                    <h4>Tiền sân (từ GIÁ SÂN):</h4>
-                    <p>500.000 VNĐ</p>
+                <!-- Phần 1: Thêm phương thức mới -->
+                <div class="modal-section">
+                    <h4>Thêm kênh thanh toán mới</h4>
+                    <form id="payment-method-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="method-name">Tên PTTT</label>
+                                <input type="text" id="method-name" name="method-name" placeholder="Ví dụ: MoMo, Tiền mặt...">
+                            </div>
+                            <div class="form-group">
+                                <label for="method-status">Trạng thái</label>
+                                <select id="method-status" name="method-status">
+                                    <option>Hoạt động</option>
+                                    <option>Tạm khóa</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="method-desc">Mô tả (nếu có)</label>
+                            <input type="text" id="method-desc" name="method-desc" placeholder="Ví dụ: Số TK Ngân hàng...">
+                        </div>
+                        <button type="button" class="btn btn-primary"><i class="fas fa-plus"></i> Thêm</button>
+                    </form>
+                </div>
 
-                    <h4>Dịch vụ (nước, v.v.):</h4>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <input type="number" id="extra-service" name="extra-service" value="0" style="padding: 10px 12px; font-size: 1.1rem; font-weight: 500;">
-                    </div>
-                    
-                    <hr>
-
-                    <h4>Đã đặt cọc (từ PHIẾU ĐẶT SÂN):</h4>
-                    <p style="color: var(--danger-color);">- 100.000 VNĐ</p>
-                    
-                    <hr>
-
-                    <div class="payment-summary">
-                        <h3>Tổng cần thu:</h3>
-                        <h2>400.000 VNĐ</h2>
+                <!-- Phần 2: Các phương thức đang hoạt động -->
+                <div class="modal-section">
+                    <h4>Các kênh thanh toán đang sử dụng</h4>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Tên PTTT</th>
+                                    <th>Mô tả</th>
+                                    <th>Trạng thái</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Tiền mặt</strong></td>
+                                    <td>Thu tại quầy</td>
+                                    <td><span class="badge badge-success">Hoạt động</span></td>
+                                    <td class="table-actions">
+                                        <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa</button>
+                                        <button class="btn btn-danger-outline btn-sm"><i class="fas fa-trash"></i> Xóa</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Chuyển khoản</strong></td>
+                                    <td>VCB: 0123456789</td>
+                                    <td><span class="badge badge-success">Hoạt động</span></td>
+                                    <td class="table-actions">
+                                        <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa</button>
+                                        <button class="btn btn-danger-outline btn-sm"><i class="fas fa-trash"></i> Xóa</button>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td><strong>MoMo</strong></td>
+                                    <td>Quét mã QR tại quầy</td>
+                                    <td><span class="badge badge-danger">Tạm khóa</span></td>
+                                    <td class="table-actions">
+                                        <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Sửa</button>
+                                        <button class="btn btn-danger-outline btn-sm"><i class="fas fa-trash"></i> Xóa</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <!-- Phần 2: Form nghiệp vụ -->
-                <form id="payment-form" style="margin-top: 25px; padding-top: 25px; border-top: 1px dashed var(--border-light);">
-                    <div class="form-group">
-                        <label for="payment-method">Chọn phương thức thanh toán (FK Mã PTTT)</label>
-                        <select id="payment-method" name="payment-method">
-                            <option value="PTTT1">Tiền mặt</option>
-                            <option value="PTTT2">Chuyển khoản (Đã check)</option>
-                            <option value="PTTT3">MoMo</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="payment-note">Ghi chú (nếu có)</label>
-                        <input type="text" id="payment-note" name="payment-note" placeholder="Nhập ghi chú...">
-                    </div>
-                </form>
             </div>
             
             <!-- Footer modal (chứa các nút) -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary">Hủy</button>
-                <button type="button" class="btn btn-success"><i class="fas fa-check-circle"></i> Xác nhận ĐÃ THANH TOÁN</button>
+                <button type="button" class="btn btn-secondary">Đóng</button>
             </div>
         </div>
     </div>

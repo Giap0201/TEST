@@ -44,8 +44,7 @@
             background-color: var(--bg-body);
             color: var(--text-dark);
             line-height: 1.6;
-            /* Ngăn cuộn body khi modal mở */
-            overflow: hidden; 
+            overflow: hidden; /* THÊM LẠI: Ngăn cuộn body khi modal mở */
         }
 
         a {
@@ -282,28 +281,49 @@
             border: 1px solid var(--border-light);
         }
         
-        /* === PAGE TOOLBAR (Dùng cho Lịch đặt sân) === */
-        .page-toolbar {
+        /* === PAGE TOOLBAR / FILTER CARD (Dùng cho Lịch đặt sân) === */
+        .page-toolbar.filter-card {
             display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
+            flex-wrap: wrap; /* Cho phép xuống dòng trên di động */
+            gap: 20px;
             align-items: center;
+            padding: 20px 25px;
         }
-        .page-toolbar input[type="date"] {
+        .page-toolbar .form-group {
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .page-toolbar .form-group label {
+            margin-bottom: 0;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .page-toolbar .form-group input,
+        .page-toolbar .form-group select {
             padding: 10px 12px;
             font-size: 0.95rem;
-            width: auto;
+            width: auto; /* Tự động co dãn */
             min-width: 180px;
             border-radius: 8px;
             border: 1px solid var(--border-light);
             font-family: 'Inter', sans-serif;
         }
+        .page-toolbar .toolbar-group {
+            display: flex;
+            gap: 10px;
+        }
         .page-toolbar .toolbar-actions {
-            margin-left: auto;
+            margin-left: auto; /* Đẩy các nút sang phải */
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap; /* Cho phép nút xuống dòng nếu không đủ chỗ */
         }
         
+        
         /* === TABLE STYLING (Chung) === */
-        /* (Giữ lại cho các trang khác, không xóa) */
+        /* (Để lại phòng khi dùng ở modal) */
         .table-container {
             overflow-x: auto;
         }
@@ -370,19 +390,36 @@
              color: var(--primary-color);
              border-color: var(--primary-color);
         }
+        .badge-secondary {
+            background-color: #f0f3f5;
+            color: var(--secondary-color);
+            border-color: #cfd8dc;
+        }
+        .badge-gold {
+            background-color: #fff8e1;
+            color: var(--gold-color);
+            border-color: var(--gold-color);
+        }
+        
 
         /* === PROMPT 11: KIỂU DÁNG LỊCH ĐẶT SÂN (TIMELINE) === */
         .schedule-container {
-            /* Dùng thẻ card làm nền */
-            padding: 0; /* Xóa padding của card */
-            overflow: hidden;
+            padding: 0; /* Ghi đè padding của .card */
+            overflow: hidden; /* Ẩn overflow của card */
+            border-radius: 16px; /* Giữ bo góc */
         }
+        
+        .schedule-grid-wrapper {
+             max-height: calc(100vh - 300px); /* Giới hạn chiều cao và cho phép cuộn */
+             overflow: auto;
+             border-top: 1px solid var(--border-light);
+        }
+
         .schedule-grid {
             display: grid;
-            /* Cột 1: Khung giờ. Các cột sau: Sân */
+            /* 100px cho giờ, 5 sân, mỗi sân 200px. Tổng 1100px */
             grid-template-columns: 100px repeat(5, 1fr); 
-            width: 100%;
-            overflow-x: auto; /* Cho phép cuộn ngang nếu nhiều sân */
+            min-width: 1000px; /* Đảm bảo có chiều rộng tối thiểu để cuộn */
         }
         
         /* Tiêu đề (Tên sân) */
@@ -408,7 +445,7 @@
         /* Cột Khung giờ */
         .schedule-time-labels {
             grid-column: 1 / 2;
-            background-color: #f8f9fa;
+            background-color: #fcfcfc;
             position: sticky;
             left: 0;
             z-index: 9;
@@ -419,9 +456,10 @@
             text-align: right;
             font-weight: 500;
             color: var(--text-muted);
-            font-size: 0.9rem;
-            border-bottom: 1px solid var(--border-light);
+            font-size: 0.85rem;
+            border-bottom: 1px dotted var(--border-light);
             border-right: 1px solid var(--border-light);
+            padding-right: 10px;
         }
         
         /* Khu vực Lưới chính (Các sân) */
@@ -429,7 +467,7 @@
             grid-column: 2 / -1; /* Từ cột 2 đến hết */
             display: grid;
             grid-template-columns: repeat(5, 1fr); /* 5 sân */
-            position: relative;
+            position: relative; /* Quan trọng cho absolute positioning */
         }
 
         /* Cột của mỗi sân */
@@ -439,7 +477,7 @@
         /* Đường kẻ ngang (giả lập) */
         .schedule-column > div {
             height: 60px; /* 1 giờ = 60px */
-            border-bottom: 1px solid var(--border-light);
+            border-bottom: 1px dotted var(--border-light);
         }
         .schedule-column:first-child > div {
              border-left: none;
@@ -448,20 +486,23 @@
         /* Khối Đặt sân (Quan trọng) */
         .booking-block {
             position: absolute;
-            padding: 10px;
+            padding: 8px 10px;
             border-radius: 8px;
             font-size: 0.85rem;
             font-weight: 500;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
             transition: all 0.3s ease;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             border: 1px solid rgba(0,0,0,0.1);
+            z-index: 5;
+            /* Thêm lề nhỏ để không dính vào vạch */
+            margin: 1px 2px;
         }
         .booking-block:hover {
             opacity: 0.8;
             cursor: pointer;
+            z-index: 6;
         }
         .booking-block strong {
             display: block;
@@ -552,6 +593,13 @@
             font-weight: 600;
             color: var(--text-dark);
         }
+        
+        .modal-header .header-note {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
 
         .modal-close {
             font-size: 2.2rem;
@@ -632,6 +680,9 @@
             flex-shrink: 0; /* Không co lại */
         }
         
+        /* === (XÓA) PROMPT 12: KIỂU DÁNG CŨ === */
+        
+        
         /* === HIỂN THỊ MODAL (CHỈ 1 MODAL ĐƯỢC BẬT) === */
         
         /* Mặc định ẩn tất cả */
@@ -639,12 +690,12 @@
             display: none;
         }
         
-        /* === PROMPT 3 (HIỆN TẠI): HIỂN THỊ TĨNH MODAL TẠO LỊCH ĐẶT === */
-        #booking-modal {
+        /* === PROMPT 13 (HIỆN TẠI): HIỂN THỊ TĨNH MODAL TẠO/SỬA PHIẾU === */
+        #booking-form-modal {
             display: flex !important;
         }
-        #booking-modal .modal-content {
-            width: 500px; /* Width theo yêu cầu */
+        #booking-form-modal .modal-content {
+            width: 500px;
         }
 
 
@@ -675,7 +726,7 @@
             }
             
             /* Responsive Lịch */
-            .schedule-grid, .schedule-main {
+            .schedule-grid {
                 grid-template-columns: 100px repeat(5, 200px); /* Đặt chiều rộng cố định cho các cột sân để cuộn */
             }
         }
@@ -699,17 +750,18 @@
                 justify-content: flex-end;
             }
             
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .page-toolbar {
+            .page-toolbar.filter-card {
                 flex-direction: column;
                 align-items: stretch;
             }
-            .page-toolbar .toolbar-actions {
+            .page-toolbar .toolbar-actions,
+            .page-toolbar .btn-primary {
                 margin-left: 0;
                 flex-direction: column;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -739,7 +791,6 @@
         <header class="top-header">
             <h1>Lịch đặt sân (Timeline)</h1>
             <div class="user-info">
-                <button class="btn btn-primary"><i class="fas fa-plus"></i> + Thêm Lịch đặt</button>
                 <div class="user-profile">
                     <div class="avatar">CS</div>
                     <div>
@@ -753,118 +804,133 @@
         <!-- === PROMPT 11: NỘI DUNG TRANG LỊCH ĐẶT SÂN === -->
         
         <!-- Thanh công cụ (Toolbar) -->
-        <div class="page-toolbar card">
-            <input type="date" value="2025-11-16">
-            <button class="btn btn-secondary"><i class="fas fa-chevron-left"></i></button>
-            <button class="btn btn-secondary">Hôm nay</button>
-            <button class="btn btn-secondary"><i class="fas fa-chevron-right"></i></button>
-            <!-- Nút Thêm Lịch đặt đã được chuyển lên top-header -->
+        <div class="card page-toolbar filter-card">
+            <div class="form-group">
+                <label for="schedule-date">Chọn ngày:</label>
+                <!-- THAY ĐỔI: Sửa value thành 2025-11-18 -->
+                <input type="date" id="schedule-date" value="2025-11-18">
+            </div>
+            <div class="toolbar-group">
+                <button class="btn btn-secondary"><i class="fas fa-chevron-left"></i></button>
+                <button class="btn btn-secondary">Hôm nay</button>
+                <button class="btn btn-secondary"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="toolbar-actions">
+                <button class="btn btn-primary"><i class="fas fa-plus"></i> Thêm Lịch đặt</button>
+            </div>
         </div>
 
         <!-- Giao diện Lịch (Schedule View) -->
         <div class="card schedule-container">
-            <div class="schedule-grid">
-                
-                <!-- Tiêu đề (Hàng 1) -->
-                <div class="schedule-header">Khung giờ</div>
-                <div class="schedule-header">Sân 1 (5v5)</div>
-                <div class="schedule-header">Sân 2 (5v5)</div>
-                <div class="schedule-header">Sân 3 (7v7)</div>
-                <div class="schedule-header">Sân 4 (5v5)</div>
-                <div class="schedule-header">Sân 5 (7v7)</div>
-
-                <!-- Cột Khung giờ (Cột 1) -->
-                <div class="schedule-time-labels">
-                    <div>07:00</div><div>08:00</div><div>09:00</div><div>10:00</div>
-                    <div>11:00</div><div>12:00</div><div>13:00</div><div>14:00</div>
-                    <div>15:00</div><div>16:00</div><div>17:00</div><div>18:00</div>
-                    <div>19:00</div><div>20:00</div><div>21:00</div><div>22:00</div>
-                </div>
-
-                <!-- Lưới chính (Các cột sân) -->
-                <div class="schedule-main">
-                    <!-- Cột Sân 1 -->
-                    <div class="schedule-column">
-                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        <div></div><div></div>
-                    </div>
-                    <!-- Cột Sân 2 -->
-                    <div class="schedule-column">
-                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        <div></div><div></div>
-                    </div>
-                    <!-- Cột Sân 3 -->
-                    <div class="schedule-column">
-                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        <div></div><div></div>
-                    </div>
-                    <!-- Cột Sân 4 -->
-                    <div class="schedule-column">
-                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        <div></div><div></div>
-                    </div>
-                    <!-- Cột Sân 5 -->
-                    <div class="schedule-column">
-                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        <div></div><div></div>
-                    </div>
-
-                    <!-- === CÁC KHỐI ĐẶT SÂN (ĐÈ LÊN LƯỚI) === -->
-                    <!-- 
-                        Công thức tính vị trí:
-                        - top = (giờ_bắt_đầu - 7) * 60px 
-                        - height = (thời_lượng_phút / 60) * 60px
-                        - left/width = (số_thứ_tự_sân - 1) * 20%
-                    -->
-
-                    <!-- Sân 2 (18:00 - 19:30), Đã cọc -->
-                    <div class="booking-block booking-warning" 
-                         style="top: 660px; height: 90px; left: 20%; width: 20%;">
-                        <strong>Anh Thái</strong>
-                        09xxxxxxx
-                    </div>
-
-                    <!-- Sân 4 (18:30 - 20:00), Chờ thanh toán -->
-                    <div class="booking-block booking-secondary" 
-                         style="top: 690px; height: 90px; left: 60%; width: 20%;">
-                        <strong>Anh Giáp</strong>
-                        Chờ thanh toán
-                    </div>
-
-                    <!-- Sân 1 (19:00 - 20:00), Đã thanh toán -->
-                    <div class="booking-block booking-success" 
-                         style="top: 720px; height: 60px; left: 0%; width: 20%;">
-                        <strong>Chị Thủy</strong>
-                        Đã thanh toán
-                    </div>
+            <!-- Wrapper để cuộn nội dung lịch -->
+            <div class="schedule-grid-wrapper">
+                <div class="schedule-grid">
                     
-                    <!-- Sân 5 (17:00 - 18:00), Đang đá -->
-                     <div class="booking-block booking-info" 
-                         style="top: 600px; height: 60px; left: 80%; width: 20%;">
-                        <strong>Khách vãng lai</strong>
-                        Đang đá...
-                    </div>
-                    
-                    <!-- Sân 3 (Cả ngày), Bảo trì -->
-                     <div class="booking-block booking-danger" 
-                         style="top: 0px; height: 960px; left: 40%; width: 20%;">
-                        <strong>SÂN BẢO TRÌ</strong>
-                        (Hỏng đèn)
+                    <!-- Hàng 1: Tiêu đề (Tên sân) -->
+                    <div class="schedule-header">Khung giờ</div>
+                    <div class="schedule-header">Sân 1 (7 người)</div>
+                    <div class="schedule-header">Sân 2 (7 người)</div>
+                    <div class="schedule-header">Sân 3 (5 người)</div>
+                    <div class="schedule-header">Sân 4 (7 người)</div>
+                    <div class="schedule-header">Sân 5 (5 người)</div>
+
+                    <!-- Cột 1: Khung giờ -->
+                    <div class="schedule-time-labels">
+                        <div>07:00-08:00</div>
+                        <div>08:00-09:00</div>
+                        <div>09:00-10:00</div>
+                        <div>10:00-11:00</div>
+                        <div>11:00-12:00</div>
+                        <div>12:00-13:00</div>
+                        <div>13:00-14:00</div>
+                        <div>14:00-15:00</div>
+                        <div>15:00-16:00</div>
+                        <div>16:00-17:00</div>
+                        <div>17:00-18:00</div>
+                        <div>18:00-19:00</div>
+                        <div>19:00-20:00</div>
+                        <div>20:00-21:00</div>
+                        <div>21:00-22:00</div>
                     </div>
 
+                    <!-- Lưới chính (Các cột sân) -->
+                    <div class="schedule-main">
+                        <!-- Cột Sân 1 (Để vẽ lưới) -->
+                        <div class="schedule-column">
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            <div></div>
+                        </div>
+                        <!-- Cột Sân 2 -->
+                        <div class="schedule-column">
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            <div></div>
+                        </div>
+                        <!-- Cột Sân 3 -->
+                        <div class="schedule-column">
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            <div></div>
+                        </div>
+                        <!-- Cột Sân 4 -->
+                        <div class="schedule-column">
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            <div></div>
+                        </div>
+                        <!-- Cột Sân 5 -->
+                        <div class="schedule-column">
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            <div></div>
+                        </div>
+
+                        <!-- === CÁC KHỐI ĐẶT SÂN (ĐÈ LÊN LƯỚI) === -->
+                        <!-- 
+                            Công thức (Start at 7:00, 60px/hour):
+                            - top = (giờ_bắt_đầu - 7) * 60px 
+                            - height = (thời_lượng_phút / 60) * 60px
+                            - left = (index_sân) * 20%
+                            - width = 20% (trừ đi lề)
+                        -->
+
+                        <!-- Sân 2 (18:00 - 19:30), Đã cọc -->
+                        <div class="booking-block booking-warning" 
+                             style="top: calc((18 - 7) * 60px); height: 90px; left: 20%; width: calc(20% - 4px);">
+                            <strong>Anh Thái</strong>
+                            09xxxxxxx
+                        </div>
+
+                        <!-- Sân 4 (18:30 - 20:00), Chờ thanh toán -->
+                        <div class="booking-block booking-secondary" 
+                             style="top: calc((18.5 - 7) * 60px); height: 90px; left: 60%; width: calc(20% - 4px);">
+                            <strong>Anh Giáp</strong>
+                            Chờ thanh toán
+                        </div>
+
+                        <!-- Sân 1 (19:00 - 20:00), Đang đá -->
+                        <div class="booking-block booking-info" 
+                             style="top: calc((19 - 7) * 60px); height: 60px; left: 0%; width: calc(20% - 4px);">
+                            <strong>Chị Thủy</strong>
+                            Đang đá...
+                        </div>
+                        
+                        <!-- Sân 3 (Cả ngày), Bảo trì -->
+                         <div class="booking-block booking-danger" 
+                             style="top: 0px; height: calc(15 * 60px); left: 40%; width: calc(20% - 4px);">
+                            <strong>SÂN BẢO TRÌ</strong>
+                            (Hỏng đèn)
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
     </main>
 
-    <!-- === PROMPT 3 (ĐÃ ĐIỀU CHỈNH): MODAL "TẠO ĐƠN ĐẶT SÂN" (HIỂN THỊ TĨNH) === -->
-    <div class="modal-overlay" id="booking-modal">
+    <!-- === PROMPT 13 (MỚI): MODAL "TẠO/SỬA PHIẾU ĐẶT SÂN" (HIỂN THỊ TĨNH) === -->
+    <div class="modal-overlay" id="booking-form-modal">
         
         <!-- Nội dung modal -->
         <div class="modal-content">
@@ -879,58 +945,66 @@
             <div class="modal-body">
                 <form id="booking-form">
                     
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="customer-phone">SĐT Khách hàng</label>
-                            <input type="tel" id="customer-phone" name="customer-phone" placeholder="Nhập SĐT...">
-                        </div>
-                        <div class="form-group">
-                            <label for="customer-name">Tên Khách hàng</label>
-                            <input type="text" id="customer-name" name="customer-name" placeholder="Tên khách...">
-                        </div>
+                    <div class="form-group">
+                        <label for="customer-phone">SĐT Khách hàng (Dùng để tìm FK Mã khách hàng)</label>
+                        <input type="tel" id="customer-phone" name="customer-phone" placeholder="Nhập SĐT để tìm...">
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-name">Tên Khách hàng</label>
+                        <input type="text" id="customer-name" name="customer-name" placeholder="Tự động điền sau khi tìm SĐT" disabled>
                     </div>
 
                     <div class="form-group">
-                        <label for="pitch-select">Chọn Sân</label>
-                        <select id="pitch-select" name="pitch-select">
-                            <!-- ĐÃ SỬA: Chỉ hiển thị sân 7 người -->
-                            <option value="san3">Sân 3 (7v7)</option>
-                            <option value="san5">Sân 5 (7v7)</option>
-                        </select>
+                         <label for="booking-date">Ngày sử dụng</label>
+                         <input type="date" id="booking-date" name="booking-date" value="2025-11-18">
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                             <label for="booking-date">Ngày đặt</label>
-                             <input type="date" id="booking-date" name="booking-date" value="2025-11-16">
+                            <label for="pitch-select">Chọn Sân (FK Mã sân)</label>
+                            <select id="pitch-select" name="pitch-select">
+                                <option value="san1">Sân 1 (7 người)</option>
+                                <option value="san2">Sân 2 (7 người)</option>
+                                <option value="san3">Sân 3 (5 người)</option>
+                                <option value="san4">Sân 4 (7 người)</option>
+                                <option value="san5">Sân 5 (5 người)</option>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label for="start-time">Giờ bắt đầu</label>
-                            <input type="time" id="start-time" name="start-time" value="18:00">
+                            <label for="time-slot-select">Chọn Khung giờ (FK Mã khung giờ)</label>
+                            <select id="time-slot-select" name="time-slot-select">
+                                <option value="KG1">07:00 - 08:00</option>
+                                <option value="KG2">08:00 - 09:00</option>
+                                <option value="KG3">09:00 - 10:00</option>
+                                <option value="KG4">10:00 - 11:00</option>
+                                <option value="KG5">11:00 - 12:00</option>
+                                <option value="KG6">12:00 - 13:00</option>
+                                <option value="KG7">13:00 - 14:00</option>
+                                <option value="KG8">14:00 - 15:00</option>
+                                <option value="KG9">15:00 - 16:00</option>
+                                <option value="KG10">16:00 - 17:00</option>
+                                <option value="KG11">17:00 - 18:00</option>
+                                <option value="KG12">18:00 - 19:00</option>
+                                <option value="KG13">19:00 - 20:00</option>
+                                <option value="KG14">20:00 - 21:00</option>
+                                <option value="KG15">21:00 - 22:00</option>
+                            </select>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="duration">Thời lượng (phút)</label>
-                            <input type="number" id="duration" name="duration" value="60" step="30">
+                            <label for="deposit-amount">Tiền đặt cọc (VNĐ)</label>
+                            <input type="number" id="deposit-amount" name="deposit-amount" value="100000">
                         </div>
-                         <div class="form-group">
-                            <label for="payment-status">Trạng thái thanh toán</label>
+                        <div class="form-group">
+                            <label for="payment-status">Trạng thái (Nghiệp vụ)</label>
                             <select id="payment-status" name="payment-status">
                                 <option value="unpaid">Chưa thanh toán</option>
                                 <option value="deposit">Đã đặt cọc</option>
-                                <option value="paid">Đã thanh toán</option>
                             </select>
                         </div>
                     </div>
-
-                    <!-- BỔ SUNG TRƯỜNG TIỀN CỌC -->
-                    <div class="form-group">
-                        <label for="deposit-amount">Tiền đặt cọc (VNĐ)</label>
-                        <input type="number" id="deposit-amount" name="deposit-amount" value="100000">
-                    </div>
-
                 </form>
             </div>
             

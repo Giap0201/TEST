@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quên Mật Khẩu - Thịnh Vượng FC</title>
+    
+    <!-- Font Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome cho Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-green: #1B5E20;
+            --primary-light: #2E7D32;
+            --accent-gold: #FFD700;
+            --text-dark: #212121;
+            --text-gray: #757575;
+            --white: #FFFFFF;
+            --input-border: #e0e0e0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* =============================
+           A. PHẦN TRÁI (BANNER - 55%)
+           ============================= */
+        .split-banner {
+            flex: 0 0 55%;
+            /* Ảnh nền mới: Sân cỏ góc thấp */
+            background-image: 
+                linear-gradient(
+                    rgba(27, 94, 32, 0.85), /* Tăng độ đậm một chút cho nền chữ trắng dễ đọc */
+                    rgba(27, 94, 32, 0.85)
+                ),
+                url('https://images.unsplash.com/photo-1551958219-acbc608c6377?q=80&w=2070');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .banner-content h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* =============================
+           B. PHẦN PHẢI (FORM - 45%)
+           ============================= */
+        .form-container {
+            flex: 1;
+            background-color: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px 80px;
+            position: relative;
+        }
+
+        .header-icon {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header-icon i {
+            font-size: 3.5rem;
+            color: var(--primary-green);
+            background-color: #e8f5e9; /* Màu nền xanh cực nhạt cho icon */
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            border-radius: 50%;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .form-header h2 {
+            color: var(--primary-green);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .form-header span {
+            color: var(--text-gray);
+            font-size: 1rem;
+            line-height: 1.5;
+            display: block;
+        }
+
+        /* Form Input Styles */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .input-box {
+            width: 100%;
+            height: 50px; /* Cao hơn chút cho dễ thao tác */
+            padding: 0 15px;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-box:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.1);
+        }
+
+        /* Nút Gửi Yêu Cầu - Màu Xanh */
+        .btn-submit {
+            width: 100%;
+            height: 50px;
+            background-color: var(--primary-green);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Điều hướng quay lại */
+        .back-to-login {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: var(--text-gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .back-to-login:hover {
+            color: var(--primary-green);
+            text-decoration: underline;
+        }
+
+        .back-to-login i {
+            margin-right: 5px;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Mobile */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                overflow-y: auto;
+            }
+
+            .split-banner {
+                flex: 0 0 200px;
+                padding: 20px;
+            }
+
+            .banner-content h1 {
+                font-size: 1.8rem;
+            }
+
+            .form-container {
+                flex: 1;
+                padding: 40px 20px;
+                border-top-left-radius: 20px;
+                border-top-right-radius: 20px;
+                margin-top: -20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- A. PHẦN TRÁI: BANNER -->
+    <div class="split-banner">
+        <div class="banner-content">
+            <h1>THỊNH VƯỢNG FC</h1>
+            <p>Bảo mật và An toàn</p>
+        </div>
+    </div>
+
+    <!-- B. PHẦN PHẢI: FORM KHÔI PHỤC -->
+    <div class="form-container">
+        
+        <!-- Icon ổ khóa -->
+        <div class="header-icon">
+            <i class="fas fa-lock"></i>
+        </div>
+
+        <div class="form-header">
+            <h2>Quên mật khẩu?</h2>
+            <span>Đừng lo lắng! Hãy nhập Email hoặc Số điện thoại bạn đã dùng để đăng ký. Chúng tôi sẽ gửi hướng dẫn lấy lại mật khẩu.</span>
+        </div>
+
+        <form action="#" method="POST">
+            <div class="form-group">
+                <label for="recovery-input">Email hoặc Số điện thoại</label>
+                <input type="text" id="recovery-input" class="input-box" placeholder="VD: 09xxxxxxx hoặc email@example.com" required>
+            </div>
+
+            <button type="submit" class="btn-submit">GỬI YÊU CẦU</button>
+
+            <a href="login.html" class="back-to-login">
+                <i class="fas fa-arrow-left"></i> Quay lại Đăng nhập
+            </a>
+        </form>
+    </div>
+
+</body>
+</html>

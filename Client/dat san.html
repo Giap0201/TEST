@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Sân & Đặt Lịch - Thịnh Vượng FC</title>
+    
+    <!-- Font: Montserrat (Tiêu đề) & Open Sans (Nội dung) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Icon Font -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* === 1. CẤU HÌNH GIAO DIỆN (Kế thừa từ index.html) === */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --primary-color: #11998e;
+            --accent-color: #FFC107;
+            --accent-gradient: linear-gradient(135deg, #FFC107 0%, #FF9800 100%);
+            --text-dark: #1a202c;
+            --text-gray: #718096;
+            --text-white: #ffffff;
+            --bg-light: #f7fafc;
+            --bg-white: #ffffff;
+            
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 25px rgba(0,0,0,0.1);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* === BUTTONS === */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.3);
+            width: 100%; /* Full width cho sidebar */
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(56, 239, 125, 0.5);
+        }
+
+        .btn-book {
+            background: var(--accent-gradient);
+            color: white;
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+        }
+        .btn-book:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* === HEADER (Giống index.html) === */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: var(--shadow-sm);
+            padding: 15px 0;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1a202c;
+            text-transform: uppercase;
+        }
+        .logo i { color: #38ef7d; font-size: 1.8rem; }
+
+        .nav-menu { display: flex; gap: 30px; }
+        .nav-link {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-family: 'Montserrat', sans-serif;
+        }
+        .nav-link.active { color: var(--primary-color); }
+        
+        .auth-actions { display: flex; gap: 15px; }
+        .mobile-menu-btn { display: none; font-size: 1.5rem; }
+
+        /* === LAYOUT CHÍNH (BOOKING PAGE) === */
+        .booking-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr; /* Sidebar 300px, còn lại là Content */
+            gap: 30px;
+            padding: 40px 0;
+            align-items: start;
+        }
+
+        /* === A. SIDEBAR BỘ LỌC === */
+        .filter-sidebar {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 100px; /* Cách top header một đoạn */
+            border: 1px solid #edf2f7;
+        }
+
+        .filter-header {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #edf2f7;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .filter-header i { color: var(--primary-color); }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+
+        .filter-group input[type="date"],
+        .filter-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background-color: #f8fafc;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(56, 239, 125, 0.2);
+            background-color: white;
+        }
+
+        /* === B. KHU VỰC DANH SÁCH SÂN === */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .results-title {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+        }
+        .results-count {
+            color: var(--text-gray);
+            font-weight: 600;
+        }
+
+        .fields-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .field-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid #edf2f7;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: #38ef7d;
+        }
+
+        .card-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .field-card:hover .card-image img {
+            transform: scale(1.05);
+        }
+
+        .card-body {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: space-between;
+        }
+        .card-title .rating {
+            font-size: 0.9rem;
+            color: #FFC107;
+        }
+
+        .card-features {
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+        .card-features li {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-features i { color: var(--primary-color); font-size: 0.8rem; }
+
+        .card-price {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-top: auto; /* Đẩy xuống cuối body */
+            margin-bottom: 15px;
+        }
+
+        .card-footer {
+            margin-top: 0;
+        }
+
+        /* === FOOTER (Giống index.html) === */
+        .footer {
+            background-color: #0f172a;
+            color: #94a3b8;
+            padding: 60px 0 30px;
+            margin-top: 60px;
+        }
+        .footer-content { text-align: center; }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 992px) {
+            .booking-layout {
+                grid-template-columns: 1fr; /* Chuyển thành 1 cột */
+            }
+            .filter-sidebar {
+                position: static; /* Bỏ sticky trên mobile */
+                margin-bottom: 30px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-menu, .auth-actions { display: none; }
+            .mobile-menu-btn { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER (Dùng lại) -->
+    <header class="header">
+        <div class="container navbar">
+            <a href="index.html" class="logo">
+                <i class="fas fa-futbol"></i> Thịnh Vượng FC
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Trang chủ</a></li>
+                    <li><a href="#" class="nav-link active">Tìm Sân</a></li>
+                    <li><a href="#" class="nav-link">Tra cứu Lịch</a></li>
+                    <li><a href="#" class="nav-link">Bảng giá</a></li>
+                    <li><a href="#" class="nav-link">Liên hệ</a></li>
+                </ul>
+            </nav>
+            <div class="auth-actions">
+                <button class="btn btn-outline">Đăng nhập</button>
+                <button class="btn btn-primary">Đăng ký</button>
+            </div>
+            <div class="mobile-menu-btn"><i class="fas fa-bars"></i></div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <div class="container booking-layout">
+        
+        <!-- A. SIDEBAR BỘ LỌC -->
+        <aside class="filter-sidebar">
+            <div class="filter-header">
+                <i class="fas fa-filter"></i> Lọc Sân Trống
+            </div>
+            <form>
+                <div class="filter-group">
+                    <label>Chọn Ngày đá:</label>
+                    <input type="date" value="2025-11-18">
+                </div>
+                <div class="filter-group">
+                    <label>Chọn Khung giờ:</label>
+                    <select>
+                        <option>-- Chọn giờ --</option>
+                        <option>17:30 - 19:00</option>
+                        <option>19:00 - 20:30</option>
+                        <option>20:30 - 22:00</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Loại sân:</label>
+                    <select>
+                        <option>Tất cả</option>
+                        <option>Sân 5 người</option>
+                        <option>Sân 7 người</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-primary">Tìm Kiếm</button>
+            </form>
+        </aside>
+
+        <!-- B. KHU VỰC DANH SÁCH SÂN -->
+        <main class="booking-list">
+            <div class="results-header">
+                <h2 class="results-title">Kết quả tìm kiếm</h2>
+                <span class="results-count">Tìm thấy 5 sân phù hợp</span>
+            </div>
+
+            <div class="fields-grid">
+                
+                <!-- Card 1 -->
+                <div class="field-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1529900748604-07564a03e7a6?q=80&w=2070" alt="Sân 1">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Sân 1 - 7 Người <span class="rating"><i class="fas fa-star"></i> 4.8</span></h3>
+                        <ul class="card-features">
+                            <li><i class="fas fa-check-circle"></i> Cỏ nhân tạo 2025</li>
+                            <li><i class="fas fa-check-circle"></i> Đèn LED chống lóa</li>
+                            <li><i class="fas fa-check-circle"></i> Có nước uống</li>
+                        </ul>
+                        <p class="card-price">300.000đ / 90 phút</p>
+                        <div class="card-footer">
+                            <!-- Nút này sẽ kích hoạt Modal ở prompt sau -->
+                            <button class="btn btn-book">Đặt Ngay</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="field-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1575361204480-aadea25e6e68?q=80&w=2071" alt="Sân 2">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Sân 2 - 5 Người <span class="rating"><i class="fas fa-star"></i> 4.5</span></h3>
+                        <ul class="card-features">
+                            <li><i class="fas fa-check-circle"></i> Gần cổng vào</li>
+                            <li><i class="fas fa-check-circle"></i> Mặt sân tiêu chuẩn</li>
+                        </ul>
+                        <p class="card-price">200.000đ / 90 phút</p>
+                        <div class="card-footer">
+                            <button class="btn btn-book">Đặt Ngay</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="field-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1551958219-acbc608c6377?q=80&w=2070" alt="Sân 3">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Sân 3 - 7 Người (VIP) <span class="rating"><i class="fas fa-star"></i> 5.0</span></h3>
+                        <ul class="card-features">
+                            <li><i class="fas fa-check-circle"></i> Khu vực riêng biệt</li>
+                            <li><i class="fas fa-check-circle"></i> Khán đài mini</li>
+                            <li><i class="fas fa-check-circle"></i> Phòng thay đồ</li>
+                        </ul>
+                        <p class="card-price">500.000đ / 90 phút</p>
+                        <div class="card-footer">
+                            <button class="btn btn-book">Đặt Ngay</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- FOOTER (Giống index.html - Rút gọn để code đỡ dài) -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2025 Thịnh Vượng FC. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
